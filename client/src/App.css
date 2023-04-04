@@ -1,0 +1,17 @@
+body {
+  margin: 0;
+}
+
+nav {
+  /* background-color: blue; */
+  padding: 10px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.23);
+}
+
+nav > ul > li {
+  color: #222;
+  font-weight: bold;
+  display: inline;
+  list-style: none;
+  margin-right: 10px;
+}
