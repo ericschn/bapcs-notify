@@ -3,13 +3,13 @@ import { useState, useEffect } from 'react';
 import { Post } from './Post';
 
 export function PostList(props) {
-  const [redditJson, setRedditJson] = useState('');
+  const [redditJson, setRedditJson] = useState([]);
   let postsArr = [];
 
   useEffect(() => {
     axios.get('http://localhost:3000/fetch-new').then((res) => {
       for (let post of res.data) {
-        postsArr.push(<Post post={post} />);
+        postsArr.push(<Post key={post.id} post={post} />);
         
       }
       setRedditJson(postsArr);

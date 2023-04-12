@@ -71,13 +71,16 @@ function compareRedditJson(a, b) {
 function parseRedditJson(posts) {
   let result = [];
   for (let post of posts) {
-    let newPost = {};
-    newPost.id = post.data.id;
-    newPost.created = post.data.created_utc;
-    newPost.title = post.data.title;
-    newPost.link = post.data.url;
-    newPost.type = post.data.link_flair_css_class;
-    newPost.detail = parseRedditJsonDetail(newPost.type);
+    let newPost = {
+      id: post.data.id,
+      created: post.data.created_utc,
+      title: post.data.title,
+      link: post.data.url,
+      domain: post.data.domain,
+      type: post.data.link_flair_css_class,
+      detail: parseRedditJsonDetail(post.data.link_flair_css_class),
+    };
+
     result.push(newPost);
   }
   return result;
