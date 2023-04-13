@@ -7,7 +7,7 @@ export function Post({ post }) {
   return (
     <div className="post">
       <h3>{post.title}</h3>
-      <p>{post.type}</p>
+      <p>{post.type} - {post.price}</p>
     </div>
   );
 }

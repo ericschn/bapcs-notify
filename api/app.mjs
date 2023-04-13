@@ -74,11 +74,13 @@ function parseRedditJson(posts) {
     let newPost = {
       id: post.data.id,
       created: post.data.created_utc,
-      title: post.data.title,
+      title: shortenRedditPostTitle(post.data.title),
       link: post.data.url,
       domain: post.data.domain,
+      price: parsePrice(post.data.title),
       type: post.data.link_flair_css_class,
-      detail: parseRedditJsonDetail(post.data.link_flair_css_class),
+      detail: parseTypeDetail(post.data),
+      reddit: parseRedditInfo(post.data),
     };
 
     result.push(newPost);
@@ -86,7 +88,16 @@ function parseRedditJson(posts) {
   return result;
 }
 
-function parseRedditJsonDetail(type) {
+function shortenRedditPostTitle(title) {
+  return title.replace(/\[.*\]/, '').replace(/[-\s–]*?\$.*$/, '');
+}
+
+function parsePrice(title) {
+  return title.match(/\$\s?[\d\.,]+/)[0];
+}
+
+function parseTypeDetail(post) {
+  const type = post.link_flair_css_class;
   switch (type.toLowerCase()) {
     // TODO: parsing for types
     case 'monitor':
@@ -100,4 +111,15 @@ function parseRedditJsonDetail(type) {
     default:
       return null;
   }
+}
+
+function parseRedditInfo(post) {
+  return {
+    title: post.title,
+    permalink: post.permalink,
+    upvotes: post.ups,
+    over_18: post.over_18,
+    spoiler: post.spoiler,
+    thumbnail: post.thumbnail,
+  };
 }
