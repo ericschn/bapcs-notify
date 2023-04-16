@@ -1,6 +1,7 @@
 body {
   margin: 0;
   background-color: #eee;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 nav {
@@ -15,6 +16,10 @@ nav > ul > li {
   display: inline;
   list-style: none;
   margin-right: 10px;
+}
+
+a {
+  text-decoration: none;
 }
 
 /* Posts */
@@ -32,8 +37,16 @@ nav > ul > li {
   margin: 12px;
   padding: 10px;
   max-width: 300px;
-  height: 260px;
+  height: 200px;
   background-color: white;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.23);
   border-radius: 20px;
+}
+
+.expired {
+  background-color: rgb(255 172 165);
+}
+
+.post-title {
+  font-weight: bold;
 }

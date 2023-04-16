@@ -7,11 +7,12 @@ export function PostList(props) {
   let postsArr = [];
 
   useEffect(() => {
-    axios.get('http://localhost:3000/fetch-new').then((res) => {
+    axios.get('http://localhost:3000/posts').then((res) => {
       for (let post of res.data) {
         postsArr.push(<Post key={post.id} post={post} />);
         
       }
+      console.log(postsArr[0]);
       setRedditJson(postsArr);
     });
   }, []);
