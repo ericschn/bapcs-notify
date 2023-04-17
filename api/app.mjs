@@ -7,6 +7,13 @@ const app = express();
 const port = 3000;
 const postsCollection = db.collection('posts');
 
+// Initialization after app restart
+// get created time of most recent post in db
+// get 25 from new and truncate array before that time
+// if all 25 posts are more recent, grab next page and try
+// try for 4 pages, add posts to db
+// ?limit=100 gets 100 results, usually 5 days worth of posts
+
 app.use(cors());
 
 app.use('/fetch-new', fetchNew);
