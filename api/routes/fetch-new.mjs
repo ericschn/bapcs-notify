@@ -2,119 +2,119 @@ import express from 'express';
 import axios from 'axios';
 import db from '../db/conn.mjs';
 import parseRedditJson from '../parse/parsing.mjs';
-const router = express.Router();
+export const fetchNewRouter = express.Router();
 
 const postsCollection = db.collection('posts');
 
-// state
-// NOT RELIABLE - data can change if post becomes deleted
+// STATE NOT RELIABLE - data can change if post becomes deleted
 // maybe switch to looking at time posted combined with reddit id
 let prevRedditJson = null;
 
-// Get the 25 posts from bapcs/new
-router.get('/', async (req, res) => {
-  let newRedditJson = null;
+// Get the 25 posts from bapcs/new and add new posts to db
+fetchNewRouter.get('/', async (req, res) => {
+  console.log('GET: /fetch-new');
+  const newRedditJson = await getRedditNew();
+  if (!newRedditJson[0]) {
+    res.status(500);
+    res.send('Cannot get reddit json: ' + newRedditJson[1]);
+    return;
+  }
 
-  axios
-    .get('https://www.reddit.com/r/buildapcsales/new/.json?raw_json=1', {
-      timeout: 6000,
-      headers: { 'accept-encoding': '*' },
-    })
-    .then(async (axiosRes) => {
-      newRedditJson = axiosRes.data.data.children;
-      if (compareRedditJson(prevRedditJson, newRedditJson)) {
-        console.log('No new posts since last check');
-        res.send('no new posts found');
-        return;
-      }
+  if (compareRedditJson(prevRedditJson, newRedditJson)) {
+    console.log('No new posts since last check');
+    res.send('No new posts since last check');
+    return;
+  }
 
-      if (prevRedditJson === null) {
-        // App was restarted, get posts from db for comparison
-        console.log('App restart detected');
-        prevRedditJson = newRedditJson;
-        const dbPosts = await postsCollection
-          .find({})
-          .sort({ created: -1 })
-          .limit(50)
-          .toArray();
+  prevRedditJson = newRedditJson;
+  const dbPosts = await postsCollection
+    .find({})
+    .sort({ created: -1 })
+    .limit(50)
+    .toArray();
 
-        // Loop posts from reddit json and only insert what's new
-        let newJsonToAdd = checkDuplicates(newRedditJson, dbPosts);
-        newRedditJson = newJsonToAdd;
-      }
+  // Loop posts from reddit json and only insert what's new
+  let newJsonToAdd = checkDuplicates(newRedditJson, dbPosts);
 
-      if (newRedditJson.length > 0) {
-        prevRedditJson = newRedditJson;
-        const posts = parseRedditJson(newRedditJson);
-        const insertResult = await postsCollection.insertMany(posts, {});
-        console.log(`${insertResult.insertedCount} documents were inserted`);
-        res.send(insertResult);
-      } else {
-        console.log(`0 documents were inserted`);
-        res.send('no new posts found');
-      }
-    })
-    .catch((error) => {
-      // TODO: better error handling
-      console.error('API /fetch-new ERROR: ' + error);
-      res.send('Error getting json from reddit: ' + error).status(500);
-    });
+  if (newJsonToAdd.length > 0) {
+    const posts = parseRedditJson(newJsonToAdd);
+    const insertResult = await postsCollection.insertMany(posts, {});
+    console.log(`${insertResult.insertedCount} documents were inserted`);
+    res.send(insertResult);
+  } else {
+    console.log(`0 documents were inserted`);
+    res.send('No new posts found');
+  }
 });
 
-function getRedditNew(limit = 25) {
-  axios
-    .get(
+fetchNewRouter.get('/populate-empty', async (req, res) => {
+  res.send('populate empty db');
+});
+
+// Helper functions
+
+// Catch up db after app was restarted
+export async function initializeApp() {
+  // Initialization after app restart
+  // get created time of most recent post in db
+  console.log('App initialization start');
+  let mostRecentDbPost = await postsCollection
+    .find({})
+    .sort({ created: -1 })
+    .limit(1)
+    .toArray();
+  if (mostRecentDbPost.length === 0) {
+    mostRecentDbPost = [{created: 0, id: 0}];
+  }
+  const mostRecentDbPostTime = mostRecentDbPost[0].created;
+
+  // get 100 from new and truncate array before that time
+  const newRedditJson = sortRedditJson(await getRedditNew(100));
+  if (!newRedditJson[0]) {
+    console.log('Initialization failure: cannot get reddit json');
+    return;
+  }
+
+  let postsToAdd = [];
+  for (let redditPost of newRedditJson) {
+    if (
+      redditPost.data.created < mostRecentDbPostTime ||
+      redditPost.data.id === mostRecentDbPost[0].id
+    ) {
+      break;
+    }
+    postsToAdd.push(redditPost);
+  }
+
+  if (postsToAdd.length > 0) {
+    const posts = parseRedditJson(postsToAdd);
+    const insertResult = await postsCollection.insertMany(posts, {});
+    console.log(
+      `Initialization complete: ${insertResult.insertedCount} documents inserted`
+    );
+  } else {
+    console.log('Initialization complete: no new documents were inserted');
+  }
+}
+
+// Gets newest posts from reddit.com/r/buildapcsales
+// limit = number of posts to return, default 25, max 100
+async function getRedditNew(limit = 25) {
+  try {
+    let result = await axios.get(
       `https://www.reddit.com/r/buildapcsales/new/.json?raw_json=1&limit=${limit}`,
       {
         timeout: 6000,
         headers: { 'accept-encoding': '*' },
       }
-    )
-    .then(async (axiosRes) => {
-      if (compareRedditJson(prevRedditJson, newRedditJson)) {
-        console.log('No new posts since last check');
-        res.send('no new posts found');
-        return;
-      }
-
-      if (prevRedditJson === null) {
-        // App was restarted, get posts from db for comparison
-        console.log('App restart detected');
-        prevRedditJson = newRedditJson;
-        const dbPosts = await postsCollection
-          .find({})
-          .sort({ created: -1 })
-          .limit(50)
-          .toArray();
-
-        // Loop posts from reddit json and only insert what's new
-        let newJsonToAdd = checkDuplicates(newRedditJson, dbPosts);
-        newRedditJson = newJsonToAdd;
-      }
-
-      if (newRedditJson.length > 0) {
-        prevRedditJson = newRedditJson;
-        const posts = parseRedditJson(newRedditJson);
-        const insertResult = await postsCollection.insertMany(posts, {});
-        console.log(`${insertResult.insertedCount} documents were inserted`);
-        res.send(insertResult);
-      } else {
-        console.log(`0 documents were inserted`);
-        res.send('no new posts found');
-      }
-    })
-    .catch((error) => {
-      // TODO: better error handling
-      console.error('API /fetch-new ERROR: ' + error);
-      res.send('Error getting json from reddit: ' + error).status(500);
-    });
+    );
+    return result.data.data.children;
+  } catch (error) {
+    console.error('API /fetch-new ERROR: ' + error);
+    return [null, error];
+  }
 }
 
-function initializeApp() {
-  return;
-}
-
-// Helper functions
 function compareRedditJson(a, b) {
   // TODO: error checking
   if (!a || !b) return false;
@@ -133,4 +133,8 @@ function checkDuplicates(newArr, oldArr) {
   }
 }
 
-export default router;
+function sortRedditJson(redditJson) {
+  redditJson.sort((a, b) => b.data.created - a.data.created);
+  console.log('sorting reddit data');
+  return redditJson;
+}
