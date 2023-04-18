@@ -1,3 +1,7 @@
+html {
+  overflow: scroll;
+}
+
 body {
   margin: 0;
   background-color: #eee;
@@ -25,11 +29,15 @@ a {
 /* Posts */
 
 .post-list {
+  width: 1024px;
+  margin: auto;
+}
+
+.post-list-wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  margin: auto;
+
   margin-top: 20px;
-  width: 1024px;
 }
 
 .post {
@@ -49,4 +57,26 @@ a {
 
 .post-title {
   font-weight: bold;
+}
+
+/* Post Filter */
+
+.post-filter {
+  margin-top: 10px;
+}
+
+.post-filter a {
+  background-color: white;
+  border-radius: 8px;
+  padding: 3px 8px 5px 8px;
+  margin-right: 8px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.23);
+}
+
+.post-filter .selected-filter {
+  background-color: rgb(161, 230, 235);
+}
+
+a, a:visited, a:hover, a:active {
+  color: inherit;
 }

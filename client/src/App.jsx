@@ -12,7 +12,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/new" element={<PostList filter="new" />} />
+        <Route path="/new/:typeFilter?" element={<PostList />} />
       </Routes>
     </div>
   );
