@@ -51,6 +51,27 @@ fetchNewRouter.get('/populate-empty', async (req, res) => {
   res.send('populate empty db');
 });
 
+// gets 100 posts from reddit and updates matching db posts with
+// upvotes and if it's expired
+fetchNewRouter.get('/update', async (req, res) => {
+  const redditNew = await getRedditNew(100);
+  let results = [];
+  for (let redditPost of redditNew) {
+    const result = await postsCollection.updateOne(
+      { id: redditPost.data.id },
+      {
+        $set: {
+          expired: redditPost.data.link_flair_css_class === 'expired',
+          upvotes: redditPost.data.ups,
+        },
+      }
+    );
+    results.push(result);
+  }
+
+  res.send(results.length + ' documents updated');
+});
+
 // Helper functions
 
 // Catch up db after app was restarted
@@ -64,7 +85,7 @@ export async function initializeApp() {
     .limit(1)
     .toArray();
   if (mostRecentDbPost.length === 0) {
-    mostRecentDbPost = [{created: 0, id: 0}];
+    mostRecentDbPost = [{ created: 0, id: 0 }];
   }
   const mostRecentDbPostTime = mostRecentDbPost[0].created;
 

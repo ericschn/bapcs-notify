@@ -11,6 +11,7 @@ export default function parseRedditJson(posts) {
       type: post.data.link_flair_css_class,
       detail: parseTypeDetail(post.data),
       reddit: parseRedditInfo(post.data),
+      upvotes: post.data.ups,
     };
 
     result.push(newPost);

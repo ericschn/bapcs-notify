@@ -14,7 +14,7 @@ export function Post({ post }) {
   }
 
   return (
-    <div className={post.type === 'expired' ? 'post expired' : 'post'}>
+    <div className={post.type === 'expired' || post.expired ? 'post expired' : 'post'}>
       <a className="post-title" href={post.link} target="_blank">
         {post.title}
       </a>
@@ -24,7 +24,7 @@ export function Post({ post }) {
       <a href={'https://reddit.com/' + post.id} target="_blank">
         reddit link
       </a>
-      <span> - upvotes: {post.reddit.upvotes}</span>
+      <span> - upvotes: {post.upvotes}</span>
       <p>
         {timeAgo} {timeAmount} ago
       </p>
