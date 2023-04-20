@@ -43,7 +43,7 @@ a {
 .post {
   display: inline-block;
   margin: 12px;
-  padding: 10px;
+  /* padding: 10px; */
   max-width: 300px;
   height: 200px;
   background-color: white;
@@ -53,6 +53,18 @@ a {
 
 .expired {
   background-color: rgb(255 172 165);
+}
+
+.post-top {
+  position: relative;
+  height: 38px;
+  padding: 10px;
+  background-color: rgb(185, 232, 247);
+  border-radius: 20px 20px 0px 0px;
+}
+
+.post-bottom {
+  padding: 10px;
 }
 
 .post-title {
@@ -74,9 +86,12 @@ a {
 }
 
 .post-filter .selected-filter {
-  background-color: rgb(161, 230, 235);
+  background-color: rgb(185, 232, 247);
 }
 
-a, a:visited, a:hover, a:active {
+a,
+a:visited,
+a:hover,
+a:active {
   color: inherit;
 }

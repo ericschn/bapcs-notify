@@ -5,13 +5,13 @@ export const postsRouter = express.Router();
 
 const postsCollection = db.collection('posts');
 
-// Get most recent 50 posts from db
+// Get most recent posts from db
 postsRouter.get('/', async (req, res) => {
   console.log('GET: /posts');
   let results = await postsCollection
     .find({})
     .sort({ created: -1 })
-    .limit(100)
+    .limit(1000) // TODO: not 1000
     .toArray();
 
   if (results.length > 0) {

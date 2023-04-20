@@ -24,12 +24,17 @@ function shortenRedditPostTitle(title) {
 }
 
 function parsePrice(title) {
-  return parseFloat(
-    title
-      .match(/\$\s?[\d\.,]+/)[0]
-      .substring(1)
-      .replace(',', '')
-  );
+  // TODO: general parsing refactor
+  try {
+    return parseFloat(
+      title
+        .match(/\$\s?[\d\.,]+/)[0]
+        .substring(1)
+        .replace(',', '')
+    );
+  } catch {
+    return 0;
+  }
 }
 
 function parseTypeDetail(post) {

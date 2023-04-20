@@ -33,7 +33,6 @@ fetchNewRouter.get('/', async (req, res) => {
     .limit(50)
     .toArray();
 
-  // Loop posts from reddit json and only insert what's new
   let newJsonToAdd = checkDuplicates(newRedditJson, dbPosts);
 
   if (newJsonToAdd.length > 0) {
@@ -47,32 +46,54 @@ fetchNewRouter.get('/', async (req, res) => {
   }
 });
 
-fetchNewRouter.get('/populate-empty', async (req, res) => {
-  res.send('populate empty db');
-});
-
-// gets 100 posts from reddit and updates matching db posts with
+// Gets 100 posts from reddit and updates matching db posts with
 // upvotes and if it's expired
 fetchNewRouter.get('/update', async (req, res) => {
+  const timeStart = Date.now();
   const redditNew = await getRedditNew(100);
-  let results = [];
+  let bulkUpdates = [];
   for (let redditPost of redditNew) {
-    const result = await postsCollection.updateOne(
-      { id: redditPost.data.id },
-      {
-        $set: {
-          expired: redditPost.data.link_flair_css_class === 'expired',
-          upvotes: redditPost.data.ups,
+    bulkUpdates.push({
+      updateOne: {
+        filter: { id: redditPost.data.id },
+        update: {
+          $set: {
+            expired: redditPost.data.link_flair_css_class === 'expired',
+            upvotes: redditPost.data.ups,
+          },
         },
-      }
-    );
-    results.push(result);
+      },
+    });
   }
-
-  res.send(results.length + ' documents updated');
+  const result = await postsCollection.bulkWrite(bulkUpdates);
+  const timeEnd = Date.now();
+  console.log(
+    '/update took ' + (timeEnd - timeStart) + 'ms updating 100 documents'
+  );
+  res.send(result);
 });
 
+// Admin function to populate an empty db
+fetchNewRouter.get('/populate-empty', async (req, res) => {
+  const prelimAfter = null; // null or 12mbk9a etc...
+  let redditNew = await getRedditNew(100, prelimAfter);
+  let after = redditNew[redditNew.length - 1].data.id;
+  for (let i = 0; i < 8; i++) {
+    console.log('after: ' + after);
+    let redditNext = await getRedditNew(100, after);
+    after = redditNext[redditNext.length - 1].data.id;
+    redditNew = redditNew.concat(redditNext);
+  }
+
+  const posts = parseRedditJson(redditNew);
+  const insertResult = await postsCollection.insertMany(posts, {});
+  console.log(`${insertResult.insertedCount} documents were inserted`);
+  res.send(insertResult);
+});
+
+//
 // Helper functions
+//
 
 // Catch up db after app was restarted
 export async function initializeApp() {
@@ -120,15 +141,17 @@ export async function initializeApp() {
 
 // Gets newest posts from reddit.com/r/buildapcsales
 // limit = number of posts to return, default 25, max 100
-async function getRedditNew(limit = 25) {
+async function getRedditNew(limit = 25, after = null) {
+  const bapcsUrl = 'https://reddit.com/r/buildapcsales/new/.json?raw_json=1';
+  let afterStr = '';
   try {
-    let result = await axios.get(
-      `https://www.reddit.com/r/buildapcsales/new/.json?raw_json=1&limit=${limit}`,
-      {
-        timeout: 6000,
-        headers: { 'accept-encoding': '*' },
-      }
-    );
+    if (after !== null) {
+      afterStr = `&after=t3_${after}`;
+    }
+    let result = await axios.get(`${bapcsUrl}${afterStr}&limit=${limit}`, {
+      timeout: 6000,
+      headers: { 'accept-encoding': '*' },
+    });
     return result.data.data.children;
   } catch (error) {
     console.error('API /fetch-new ERROR: ' + error);
