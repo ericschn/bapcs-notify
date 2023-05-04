@@ -38,3 +38,4 @@ postsRouter.get('/posts/:postId', (req, res) => {
   const postId = req.params.postId;
   res.send('posts GET id=' + postId);
 });
+

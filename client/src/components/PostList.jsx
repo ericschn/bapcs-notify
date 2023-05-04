@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Post } from './Post';
 import { PostFilter } from './PostFilter';
+import { Post2 } from './Post2';
 
 export function PostList() {
   const [posts, setPosts] = useState([]);
@@ -19,7 +20,8 @@ export function PostList() {
     if (needData) {
       axios.get('http://localhost:3000/posts').then((res) => {
         for (let post of res.data) {
-          postsArr.push(<Post key={post.id} post={post} />);
+          // postsArr.push(<Post key={post.id} post={post} />);
+          postsArr.push(<Post2 key={post.id} post={post} />);
         }
         setPosts(postsArr);
       });

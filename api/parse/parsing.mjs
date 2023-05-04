@@ -10,8 +10,10 @@ export default function parseRedditJson(posts) {
       price: parsePrice(post.data.title),
       type: post.data.link_flair_css_class,
       detail: parseTypeDetail(post.data),
+      brand: 'testBrand',
       reddit: parseRedditInfo(post.data),
       upvotes: post.data.ups,
+      expired: parseExpired(post.data),
     };
 
     result.push(newPost);
@@ -37,18 +39,36 @@ function parsePrice(title) {
   }
 }
 
+function parseType(post) {
+  const type = post.link_flair_css_class;
+  if (type !== 'expired') return type;
+  // TODO: extra parsing to find type when job discovers expired post on first
+  // discovery. This should rarely happen as the job runs every 2 minutes, but
+  // still something to account for.
+  return 'unknown';
+}
+
+function parseExpired(post) {
+  return post.link_flair_css_class === 'expired';
+}
+
 function parseTypeDetail(post) {
   const type = post.link_flair_css_class;
   switch (type.toLowerCase()) {
     // TODO: parsing for types
     case 'monitor':
-      return { hz: 144, panel: 'ips' };
+      return { inches: 27, hRes: 2560, vRes: 1440, hz: 144, panel: 'ips' };
     case 'ram':
       return { ram_speed: 6400, ram_ddr: 'DDR5' };
     case 'cpu':
       return { cpu_brand: 'amd', cpu_cores: 16 };
     case 'gpu':
       return { gpu_brand: 'nvidia', gpu_memory: 12 };
+      case 'ssd-m2':
+        return { ssd_brand: 'samsung', gpu_memory: 12 };
+      case 'ssd-sata':
+        return { ssd_brand: 'nvidia', gpu_memory: 12 };
+
     default:
       return null;
   }

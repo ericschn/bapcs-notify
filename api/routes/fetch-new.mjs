@@ -75,13 +75,27 @@ fetchNewRouter.get('/update', async (req, res) => {
 
 // Admin function to populate an empty db
 fetchNewRouter.get('/populate-empty', async (req, res) => {
-  const prelimAfter = null; // null or 12mbk9a etc...
+  const prelimAfter = '11kp20w'; // null or 12mbk9a etc...
   let redditNew = await getRedditNew(100, prelimAfter);
-  let after = redditNew[redditNew.length - 1].data.id;
-  for (let i = 0; i < 8; i++) {
+  res.send(redditNew);
+  let after = '';
+  try {
+    after = redditNew[redditNew.length - 1].data.id;
+  } catch (err) {
+    console.log(err);
+    return;
+  }
+  for (let i = 0; i < 6; i++) {
     console.log('after: ' + after);
     let redditNext = await getRedditNew(100, after);
-    after = redditNext[redditNext.length - 1].data.id;
+    res.send(redditNext);
+    try {
+      after = redditNext[redditNext.length - 1].data.id;
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+
     redditNew = redditNew.concat(redditNext);
   }
 
@@ -90,6 +104,12 @@ fetchNewRouter.get('/populate-empty', async (req, res) => {
   console.log(`${insertResult.insertedCount} documents were inserted`);
   res.send(insertResult);
 });
+
+// Admin job: flip bool on posts with type: expired 
+fetchNewRouter.get('/fix-expired', async (req, res) => {
+  res.send('yay');
+})
+
 
 //
 // Helper functions
@@ -149,6 +169,25 @@ async function getRedditNew(limit = 25, after = null) {
       afterStr = `&after=t3_${after}`;
     }
     let result = await axios.get(`${bapcsUrl}${afterStr}&limit=${limit}`, {
+      timeout: 6000,
+      headers: { 'accept-encoding': '*' },
+    });
+    return result.data.data.children;
+  } catch (error) {
+    console.error('API /fetch-new ERROR: ' + error);
+    return [null, error];
+  }
+}
+
+async function getRedditSearch(limit = 25, after = null, type) {
+  const bapcsUrl =
+    'https://reddit.com/r/buildapcsales/search.json?raw_json=1&restrict_sr=on&sort=top&q=flair%3A';
+  let afterStr = '';
+  try {
+    if (after !== null) {
+      afterStr = `&after=t3_${after}`;
+    }
+    let result = await axios.get(`${bapcsUrl}${type}${afterStr}&limit=${limit}`, {
       timeout: 6000,
       headers: { 'accept-encoding': '*' },
     });

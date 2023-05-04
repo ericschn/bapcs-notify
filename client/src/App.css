@@ -95,3 +95,62 @@ a:hover,
 a:active {
   color: inherit;
 }
+
+/* post2 */
+.post2 {
+  position: relative;
+  display: inline-block;
+  margin: 12px;
+  /* padding: 10px; */
+  max-width: 300px;
+  height: 200px;
+  background-color: white;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.23);
+  border-radius: 10px;
+}
+
+.post2 > .post-top {
+  position: relative;
+  height: 60px;
+  padding: 0px;
+  background-color: rgb(185, 232, 247);
+  border-radius: 10px 10px 0px 0px;
+}
+
+.post2 .post-type {
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.post2 .detail {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+}
+
+.post2 .price {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.post2 .time-ago {
+  position: absolute;
+  bottom: 4px;
+  left: 8px;
+}
+
+.post2 .post-domain {
+  position: absolute;
+  bottom: 4px;
+  right: 8px;
+}
+
+.expired {
+  background-color: rgb(255 172 165);
+}

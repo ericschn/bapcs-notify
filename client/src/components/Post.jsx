@@ -32,16 +32,16 @@ export function Post({ post }) {
         </a>
       </div>
       <div className="post-bottom">
-        <p>
-          {post.type} - ${post.price} - {post.domain}
-        </p>
+        <div>
+          {post.type} - ${Math.ceil(parseFloat(post.price))} - {post.domain}
+        </div>
         <a href={'https://reddit.com/' + post.id} target="_blank">
           {post.id} reddit link
         </a>
         <span> - upvotes: {post.upvotes}</span>
-        <p>
+        <div>
           {timeAgo} {timeAmount} ago - {post.created}
-        </p>
+        </div>
       </div>
     </div>
   );
