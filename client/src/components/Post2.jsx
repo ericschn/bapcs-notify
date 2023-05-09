@@ -22,6 +22,9 @@ export function Post2({ post }) {
     timeAmount = 'months';
   }
 
+  // DEBUG
+  // console.log(post);
+
   return (
     <div
       className={
@@ -29,14 +32,12 @@ export function Post2({ post }) {
       }
     >
       <div className="post-top">
-        <a className="post-type" href={post.link} target="_blank">
-          {post.type.toUpperCase()}
-        </a>
-        <div className="detail">
+
+
           {/* DDR5 6200 32GB (2X16) */}
           {/* {post.detail ? Object.values(post.detail) : ''} */}
           <PostDetail post={post} />
-        </div>
+
         <div className="price">${Math.ceil(post.price)}</div>
       </div>
 

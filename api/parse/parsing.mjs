@@ -57,17 +57,26 @@ function parseTypeDetail(post) {
   switch (type.toLowerCase()) {
     // TODO: parsing for types
     case 'monitor':
-      return { inches: 27, hRes: 2560, vRes: 1440, hz: 144, panel: 'ips' };
+      return {
+        inches: 27,
+        hRes: 2560,
+        vRes: 1440,
+        hz: 144,
+        panel: 'ips',
+        sync: 'FreeSync',
+        ultrawide: false,
+        curved: false
+      };
     case 'ram':
       return { ram_speed: 6400, ram_ddr: 'DDR5' };
     case 'cpu':
-      return { cpu_brand: 'amd', cpu_cores: 16 };
+      return { cpu_brand: 'amd', cpu_cores: 16, cpu_ghz: 2.8 };
     case 'gpu':
       return { gpu_brand: 'nvidia', gpu_memory: 12 };
-      case 'ssd-m2':
-        return { ssd_brand: 'samsung', gpu_memory: 12 };
-      case 'ssd-sata':
-        return { ssd_brand: 'nvidia', gpu_memory: 12 };
+    case 'ssd-m2':
+      return { ssd_brand: 'samsung', gpu_memory: 12 };
+    case 'ssd-sata':
+      return { ssd_brand: 'nvidia', gpu_memory: 12 };
 
     default:
       return null;

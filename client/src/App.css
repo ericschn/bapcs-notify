@@ -117,10 +117,12 @@ a:active {
   border-radius: 10px 10px 0px 0px;
 }
 
-.post2 .post-type {
+.post2 .post-detail {
   position: absolute;
   top: 2px;
   left: 6px;
+}
+.post2 .post-type {
   font-size: 24px;
   font-weight: bold;
 }
