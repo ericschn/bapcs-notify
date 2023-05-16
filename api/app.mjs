@@ -15,7 +15,11 @@ app.use(cors());
 
 // IP whitelist
 app.use((req, res, next) => {
-  let validIps = ['::ffff:127.0.0.11', process.env.IP_LOCAL, process.env.IP_HOME];
+  let validIps = [
+    '::ffff:127.0.0.11',
+    process.env.IP_LOCAL,
+    process.env.IP_HOME,
+  ];
 
   if (validIps.includes(req.socket.remoteAddress)) {
     next();
@@ -25,6 +29,11 @@ app.use((req, res, next) => {
     // const err = new Error('Not Allowed: ' + req.socket.remoteAddress);
     next();
   }
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(403).send('Forbidden');
 });
 
 app.use('/fetch-new', fetchNewRouter);
