@@ -6,23 +6,24 @@ export const fetchNewRouter = express.Router();
 
 const postsCollection = db.collection('posts');
 
-// STATE NOT RELIABLE - data can change if post becomes deleted
+// TODO: STATE NOT RELIABLE - data can change if post becomes deleted
 // maybe switch to looking at time posted combined with reddit id
 let prevRedditJson = null;
 
 // Get the 25 posts from bapcs/new and add new posts to db
 fetchNewRouter.get('/', async (req, res) => {
-  console.log('GET: /fetch-new');
+  // console.log('GET: /fetch-new');
   const newRedditJson = await getRedditNew();
   if (!newRedditJson[0]) {
-    res.status(500);
-    res.send('Cannot get reddit json: ' + newRedditJson[1]);
+    // res.status(500);
+    // res.send('Cannot get reddit json: ' + newRedditJson[1]);
+    res.status(500).send('-1');
     return;
   }
 
   if (compareRedditJson(prevRedditJson, newRedditJson)) {
-    console.log('No new posts since last check');
-    res.send('No new posts since last check');
+    // console.log('No new posts since last check');
+    res.send('0');
     return;
   }
 
@@ -39,10 +40,10 @@ fetchNewRouter.get('/', async (req, res) => {
     const posts = parseRedditJson(newJsonToAdd);
     const insertResult = await postsCollection.insertMany(posts, {});
     console.log(`${insertResult.insertedCount} documents were inserted`);
-    res.send(insertResult);
+    res.send(insertResult.insertedCount);
   } else {
     console.log(`0 documents were inserted`);
-    res.send('No new posts found');
+    res.send('0');
   }
 });
 
@@ -126,7 +127,6 @@ fetchNewRouter.get('/monitor', async (req, res) => {
   console.log(dbMonitors.length);
 
   let redditNew = await getRedditSearch('monitor');
-
 
   const posts = parseRedditJson(redditNew);
   // const insertResult = await postsCollection.insertMany(posts, {});
