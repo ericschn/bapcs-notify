@@ -1,16 +1,19 @@
+import parseMonitorDetails from "./monitorParse.mjs";
+
 export default function parseRedditJson(posts) {
   let result = [];
   for (let post of posts) {
     let newPost = {
       id: post.data.id,
       created: post.data.created_utc,
-      title: shortenRedditPostTitle(post.data.title),
+      shortTitle: shortenRedditPostTitle(post.data.title),
+      title: post.data.title,
       link: post.data.url,
       domain: post.data.domain,
       price: parsePrice(post.data.title),
       type: post.data.link_flair_css_class,
       detail: parseTypeDetail(post.data),
-      brand: 'testBrand',
+      brand: '', // TODO: put brand in detail
       reddit: parseRedditInfo(post.data),
       upvotes: post.data.ups,
       expired: parseExpired(post.data),
@@ -54,19 +57,21 @@ function parseExpired(post) {
 
 function parseTypeDetail(post) {
   const type = post.link_flair_css_class;
+  if (!type) return null;
   switch (type.toLowerCase()) {
     // TODO: parsing for types
     case 'monitor':
-      return {
-        inches: 27,
-        hRes: 2560,
-        vRes: 1440,
-        hz: 144,
-        panel: 'ips',
-        sync: 'FreeSync',
-        ultrawide: false,
-        curved: false
-      };
+      return parseMonitorDetails(post.title);
+      // return {
+      //   inches: 27,
+      //   hRes: 2560,
+      //   vRes: 1440,
+      //   hz: 144,
+      //   panel: 'ips',
+      //   sync: 'FreeSync',
+      //   ultrawide: false,
+      //   curved: false
+      // };
     case 'ram':
       return { ram_speed: 6400, ram_ddr: 'DDR5' };
     case 'cpu':

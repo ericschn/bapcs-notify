@@ -95,6 +95,32 @@ export default function parseMonitorDetails(title) {
     monitorItem.sync = 'FreeSync';
   }
 
+  // Brand
+  // TODO: brands file
+  const monitorBrands = [
+    'Dell',
+    'Alienware',
+    'LG',
+    'Samsung',
+    'Acer',
+    'KOORUI',
+    'MSI',
+    'INNOCN',
+    'Corsair',
+    'Monoprice',
+    'Gigabyte',
+    'Razer',
+    'BenQ',
+    'Vizio',
+    'Lenovo',
+  ];
+  for (let brand of monitorBrands) {
+    let brandRegex = new RegExp(`\\W${brand}\\W`, 'i');
+    if (title.match(brandRegex)) {
+      monitorItem.brand = brand;
+    }
+  }
+
   // Infer some data if missing
 
   return monitorItem;

@@ -1,6 +1,6 @@
 import express from 'express';
 import db from '../db/conn.mjs';
-import jsonwebtoken from 'jsonwebtoken';
+// import jsonwebtoken from 'jsonwebtoken';
 export const loginRouter = express.Router();
 
 const postsCollection = db.collection('posts');
@@ -27,11 +27,11 @@ loginRouter.post('/', (req, res) => {
   const { username, password } = req.body;
   console.log(`${username} is trying to login ..`);
 
-  if (username === 'admin' && password === 'admin') {
-    return res.json({
-      token: jsonwebtoken.sign({ user: 'admin' }, process.env.JWT_SECRET),
-    });
-  }
+  // if (username === 'admin' && password === 'admin') {
+  //   return res.json({
+  //     token: jsonwebtoken.sign({ user: 'admin' }, process.env.JWT_SECRET),
+  //   });
+  // }
 
   return res
     .status(401)

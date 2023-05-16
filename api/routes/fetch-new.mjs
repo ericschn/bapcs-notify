@@ -105,11 +105,40 @@ fetchNewRouter.get('/populate-empty', async (req, res) => {
   res.send(insertResult);
 });
 
-// Admin job: flip bool on posts with type: expired 
-fetchNewRouter.get('/fix-expired', async (req, res) => {
-  res.send('yay');
-})
+// Monitor testing
+fetchNewRouter.get('/monitor', async (req, res) => {
+  // Get time in epoch seconds 10 days ago
+  const tenDaysAgo = Math.floor(Date.now() / 1000) - 864000;
 
+  const deleteResult = await postsCollection.deleteMany({
+    type: 'monitor',
+    created: { $gt: tenDaysAgo },
+  });
+
+  console.log(deleteResult);
+
+  const dbMonitors = await postsCollection
+    .find({ type: 'monitor' })
+    .sort({ created: -1 })
+    .limit(20)
+    .toArray();
+
+  console.log(dbMonitors.length);
+
+  let redditNew = await getRedditSearch('monitor');
+
+
+  const posts = parseRedditJson(redditNew);
+  // const insertResult = await postsCollection.insertMany(posts, {});
+  // console.log(`${insertResult.insertedCount} documents were inserted`);
+  res.send(posts);
+});
+
+// TODO: Admin job: flip bool on posts with type: expired
+fetchNewRouter.get('/fix-expired', async (req, res) => {
+  // TODO
+  res.send('yay');
+});
 
 //
 // Helper functions
@@ -179,7 +208,7 @@ async function getRedditNew(limit = 25, after = null) {
   }
 }
 
-async function getRedditSearch(limit = 25, after = null, type) {
+async function getRedditSearch(type, limit = 25, after = null) {
   const bapcsUrl =
     'https://reddit.com/r/buildapcsales/search.json?raw_json=1&restrict_sr=on&sort=top&q=flair%3A';
   let afterStr = '';
@@ -187,10 +216,13 @@ async function getRedditSearch(limit = 25, after = null, type) {
     if (after !== null) {
       afterStr = `&after=t3_${after}`;
     }
-    let result = await axios.get(`${bapcsUrl}${type}${afterStr}&limit=${limit}`, {
-      timeout: 6000,
-      headers: { 'accept-encoding': '*' },
-    });
+    let result = await axios.get(
+      `${bapcsUrl}${type}${afterStr}&limit=${limit}`,
+      {
+        timeout: 6000,
+        headers: { 'accept-encoding': '*' },
+      }
+    );
     return result.data.data.children;
   } catch (error) {
     console.error('API /fetch-new ERROR: ' + error);

@@ -6,9 +6,9 @@ export function PostDetail({ post }) {
       case 'monitor':
         type = 'Monitor';
         detailTop = ` ${post.detail.inches}" `;
-        detailBot = `${post.brand} ${post.detail.hRes}x${
+        detailBot = `${post.detail.brand} ${post.detail.hRes}x${
           post.detail.vRes
-        } ${post.detail.panel.toUpperCase()}`;
+        } ${post.detail.panel.toUpperCase()} ${post.detail.hz}hz`;
         break;
 
       default:

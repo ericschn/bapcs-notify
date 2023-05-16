@@ -26,6 +26,7 @@ export const answers = [
     sync: null,
     ultrawide: null,
     curved: null,
+    brand: 'LG',
   },
   {
     curved: null,
@@ -36,6 +37,7 @@ export const answers = [
     sync: null,
     ultrawide: null,
     vRes: null,
+    brand: 'LG',
   },
   {
     curved: null,
@@ -46,6 +48,7 @@ export const answers = [
     sync: null,
     ultrawide: null,
     vRes: 1080,
+    brand: 'KOORUI',
   },
   {
     curved: null,
@@ -56,6 +59,7 @@ export const answers = [
     sync: null,
     ultrawide: null,
     vRes: null,
+    brand: 'LG',
   },
   {
     curved: null,
@@ -66,6 +70,7 @@ export const answers = [
     sync: null,
     ultrawide: null,
     vRes: null,
+    brand: 'LG',
   },
   {
     curved: null,
@@ -76,6 +81,7 @@ export const answers = [
     sync: null,
     ultrawide: null,
     vRes: 1440,
+    brand: 'MSI',
   },
   {
     curved: null,
@@ -86,6 +92,7 @@ export const answers = [
     sync: null,
     ultrawide: null,
     vRes: 1080,
+    brand: 'INNOCN',
   },
   {
     curved: null,
@@ -96,6 +103,7 @@ export const answers = [
     sync: null,
     ultrawide: null,
     vRes: 1440,
+    brand: 'Acer',
   },
   {
     curved: null,
@@ -106,6 +114,7 @@ export const answers = [
     sync: 'FreeSync',
     ultrawide: null,
     vRes: 1440,
+    brand: 'Acer',
   },
   {
     curved: null,
@@ -116,5 +125,17 @@ export const answers = [
     sync: null,
     ultrawide: null,
     vRes: 1440,
+    brand: 'Samsung',
+  },
+  {
+    curved: null,
+    hRes: 2560,
+    hz: 240,
+    inches: 45,
+    panel: 'oled',
+    sync: 'FreeSync',
+    ultrawide: null,
+    vRes: 1440,
+    brand: 'LG',
   },
 ];
