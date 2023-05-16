@@ -22,8 +22,8 @@ app.use((req, res, next) => {
   } else {
     // TODO: real log
     console.log('Bad IP: ' + req.socket.remoteAddress);
-    const err = new Error('Not Allowed: ' + req.socket.remoteAddress);
-    next(err);
+    // const err = new Error('Not Allowed: ' + req.socket.remoteAddress);
+    next();
   }
 });
 
