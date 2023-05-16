@@ -16,7 +16,7 @@ app.use(cors());
 // IP whitelist
 app.use((req, res, next) => {
   let validIps = [
-    '::ffff:127.0.0.11',
+    '::ffff:127.0.0.1',
     process.env.IP_LOCAL,
     process.env.IP_HOME,
   ];
