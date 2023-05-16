@@ -13,6 +13,20 @@ initializeApp();
 
 app.use(cors());
 
+// IP whitelist
+app.use((req, res, next) => {
+  let validIps = ['::ffff:127.0.0.11', process.env.IP_LOCAL, process.env.IP_HOME];
+
+  if (validIps.includes(req.socket.remoteAddress)) {
+    next();
+  } else {
+    // TODO: real log
+    console.log('Bad IP: ' + req.socket.remoteAddress);
+    const err = new Error('Not Allowed: ' + req.socket.remoteAddress);
+    next(err);
+  }
+});
+
 app.use('/fetch-new', fetchNewRouter);
 app.use('/posts', postsRouter);
 app.use('/login', loginRouter);
