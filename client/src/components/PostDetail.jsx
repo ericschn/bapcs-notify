@@ -8,7 +8,7 @@ export function PostDetail({ post }) {
         detailTop = ` ${post.detail.inches}" `;
         detailBot = `${post.detail.brand} ${post.detail.hRes}x${
           post.detail.vRes
-        } ${post.detail.panel.toUpperCase()} ${post.detail.hz}hz`;
+        } ${post.detail.panel?.toUpperCase()} ${post.detail.hz}hz`;
         break;
 
       default:
@@ -21,7 +21,7 @@ export function PostDetail({ post }) {
   return (
     <div className="post-detail">
       <a className="post-type" href={post.link} target="_blank">
-        {type.toUpperCase()}
+        {type?.toUpperCase()}
       </a>
       {detailTop}
       {/* {post.detail ? Object.values(post.detail) : ''} */}
