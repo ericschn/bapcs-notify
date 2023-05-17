@@ -18,7 +18,7 @@ export function PostList() {
 
   useEffect(() => {
     if (needData) {
-      axios.get(`${import.meta.env.API_URL}/posts`).then((res) => {
+      axios.get(`${import.meta.env.VITE_API_URL}/posts`).then((res) => {
         for (let post of res.data) {
           // postsArr.push(<Post key={post.id} post={post} />);
           postsArr.push(<Post2 key={post.id} post={post} />);
