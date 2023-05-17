@@ -40,9 +40,9 @@ fetchNewRouter.get('/', async (req, res) => {
     const posts = parseRedditJson(newJsonToAdd);
     const insertResult = await postsCollection.insertMany(posts, {});
     console.log(`${insertResult.insertedCount} documents were inserted`);
-    res.send(insertResult.insertedCount);
+    res.send('1');
   } else {
-    console.log(`0 documents were inserted`);
+    console.log('0 documents were inserted');
     res.send('0');
   }
 });
