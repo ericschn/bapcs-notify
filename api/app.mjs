@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import db from './db/conn.mjs';
-import { fetchNewRouter, initializeApp } from './routes/fetch-new.mjs';
+import { workerRouter, initializeApp } from './routes/worker.mjs';
 import { postsRouter } from './routes/posts.mjs';
 import { loginRouter } from './routes/login.mjs';
 
@@ -15,7 +15,7 @@ initializeApp();
 // set route prefix
 app.use('/api/v1', router);
 
-app.use(cors());
+router.use(cors());
 
 // TODO: api keys, jwt
 // app.use((req, res, next) => {
@@ -40,7 +40,7 @@ app.use(cors());
 //   res.status(403).send('Forbidden');
 // });
 
-router.use('/fetch-new', fetchNewRouter);
+router.use('/worker', workerRouter);
 router.use('/posts', postsRouter);
 router.use('/login', loginRouter);
 

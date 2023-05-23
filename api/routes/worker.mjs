@@ -2,7 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import db from '../db/conn.mjs';
 import parseRedditJson from '../parse/parsing.mjs';
-export const fetchNewRouter = express.Router();
+export const workerRouter = express.Router();
 
 const postsCollection = db.collection('posts');
 
@@ -11,7 +11,7 @@ const postsCollection = db.collection('posts');
 let prevRedditJson = null;
 
 // Get the 25 posts from bapcs/new and add new posts to db
-fetchNewRouter.get('/', async (req, res) => {
+workerRouter.get('/', async (req, res) => {
   // console.log('GET: /fetch-new');
   const newRedditJson = await getRedditNew();
   if (!newRedditJson[0]) {
@@ -47,9 +47,56 @@ fetchNewRouter.get('/', async (req, res) => {
   }
 });
 
+// Gets 100 posts, adds new posts and updates existing
+workerRouter.get('/update', async (req, res) => {
+  const redditNew = await getRedditNew(100);
+  if (!redditNew[0]) {
+    // Cannot get reddit json
+    res.status(500).send('-1');
+    return;
+  }
+
+  const dbPosts = await postsCollection
+    .find({})
+    .sort({ created: -1 })
+    .limit(50)
+    .toArray();
+
+  // Add new posts if any
+  let response = '';
+  let newJsonToAdd = checkDuplicates(redditNew, dbPosts);
+  if (newJsonToAdd.length > 0) {
+    const posts = parseRedditJson(newJsonToAdd);
+    await postsCollection.insertMany(posts, {});
+    response = '1';
+  } else {
+    console.log('0 documents were inserted');
+    response = '0';
+  }
+
+  // Update
+  let bulkUpdates = [];
+  for (let redditPost of redditNew) {
+    bulkUpdates.push({
+      updateOne: {
+        filter: { id: redditPost.data.id },
+        update: {
+          $set: {
+            expired: redditPost.data.link_flair_css_class === 'expired',
+            upvotes: redditPost.data.ups,
+          },
+        },
+      },
+    });
+  }
+  const result = await postsCollection.bulkWrite(bulkUpdates);
+
+  res.send(response);
+});
+
 // Gets 100 posts from reddit and updates matching db posts with
 // upvotes and if it's expired
-fetchNewRouter.get('/update', async (req, res) => {
+workerRouter.get('/update-old', async (req, res) => {
   const timeStart = Date.now();
   const redditNew = await getRedditNew(100);
   let bulkUpdates = [];
@@ -75,7 +122,7 @@ fetchNewRouter.get('/update', async (req, res) => {
 });
 
 // Admin function to populate an empty db
-fetchNewRouter.get('/populate-empty', async (req, res) => {
+workerRouter.get('/populate-empty', async (req, res) => {
   const prelimAfter = '11kp20w'; // null or 12mbk9a etc...
   let redditNew = await getRedditNew(100, prelimAfter);
   res.send(redditNew);
@@ -107,7 +154,7 @@ fetchNewRouter.get('/populate-empty', async (req, res) => {
 });
 
 // Monitor testing
-fetchNewRouter.get('/monitor', async (req, res) => {
+workerRouter.get('/monitor', async (req, res) => {
   // Get time in epoch seconds 10 days ago
   const tenDaysAgo = Math.floor(Date.now() / 1000) - 864000;
 
@@ -135,7 +182,7 @@ fetchNewRouter.get('/monitor', async (req, res) => {
 });
 
 // TODO: Admin job: flip bool on posts with type: expired
-fetchNewRouter.get('/fix-expired', async (req, res) => {
+workerRouter.get('/fix-expired', async (req, res) => {
   // TODO
   res.send('yay');
 });

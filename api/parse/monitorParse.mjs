@@ -101,6 +101,7 @@ export default function parseMonitorDetails(title) {
     'Dell',
     'Alienware',
     'LG',
+    'Ultragear',
     'Samsung',
     'Acer',
     'KOORUI',
