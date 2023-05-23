@@ -6,7 +6,7 @@ import { postsRouter } from './routes/posts.mjs';
 import { loginRouter } from './routes/login.mjs';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 const postsCollection = db.collection('posts');
 const router = express.Router();
 
