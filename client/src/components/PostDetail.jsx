@@ -1,14 +1,19 @@
 export function PostDetail({ post }) {
   let type, detailTop, detailBot;
 
+
+  // TODO: Module for detail formatting
+
   try {
     switch (post.type) {
       case 'monitor':
         type = 'Monitor';
         detailTop = ` ${post.detail.inches}" `;
-        detailBot = `${post.detail.brand} ${post.detail.hRes}x${
-          post.detail.vRes
-        } ${post.detail.panel?.toUpperCase()} ${post.detail.hz}hz`;
+        detailBot = `${post.detail.brand ? post.detail.brand : ''} ${
+          post.detail.hRes ? `${post.detail.hRes}x` : ''
+        }${post.detail.vRes} ${
+          post.detail.panel ? post.detail.panel?.toUpperCase() : ''
+        } ${post.detail.hz ? `${post.detail.hz}hz` : ''}`;
         break;
 
       default:

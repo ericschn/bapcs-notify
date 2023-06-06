@@ -11,7 +11,7 @@ postsRouter.get('/', async (req, res) => {
   let results = await postsCollection
     .find({})
     .sort({ created: -1 })
-    .limit(1000) // TODO: not 1000
+    .limit(250) // TODO: pagination
     .toArray();
 
   if (results.length > 0) {

@@ -153,10 +153,10 @@ workerRouter.get('/populate-empty', async (req, res) => {
   res.send(insertResult);
 });
 
-// Monitor testing
+// Monitor testing, delete all monitor posts from 6 days ago and re-parse
 workerRouter.get('/monitor', async (req, res) => {
-  // Get time in epoch seconds 10 days ago
-  const tenDaysAgo = Math.floor(Date.now() / 1000) - 864000;
+  // Get time in epoch seconds 6 days ago
+  const tenDaysAgo = Math.floor(Date.now() / 1000) - 518400;
 
   const deleteResult = await postsCollection.deleteMany({
     type: 'monitor',
@@ -171,14 +171,28 @@ workerRouter.get('/monitor', async (req, res) => {
     .limit(20)
     .toArray();
 
-  console.log(dbMonitors.length);
-
   let redditNew = await getRedditSearch('monitor');
 
   const posts = parseRedditJson(redditNew);
-  // const insertResult = await postsCollection.insertMany(posts, {});
-  // console.log(`${insertResult.insertedCount} documents were inserted`);
-  res.send(posts);
+
+  // Check if monitor post is in db before inserting
+  let nonDupePosts = [];
+  for (let post of posts) {
+    let dupe = false;
+    for (let dbPost of dbMonitors) {
+      if (post.id === dbPost.id) {
+        dupe = true;
+        break;
+      }
+    }
+    if (!dupe) {
+      nonDupePosts.push(post);
+    }
+  }
+
+  const insertResult = await postsCollection.insertMany(posts, {});
+  console.log(`${insertResult.insertedCount} documents were inserted`);
+  res.send(insertResult.insertedCount.toString());
 });
 
 // TODO: Admin job: flip bool on posts with type: expired
@@ -257,7 +271,7 @@ async function getRedditNew(limit = 25, after = null) {
 
 async function getRedditSearch(type, limit = 25, after = null) {
   const bapcsUrl =
-    'https://reddit.com/r/buildapcsales/search.json?raw_json=1&restrict_sr=on&sort=top&q=flair%3A';
+    'https://reddit.com/r/buildapcsales/search.json?raw_json=1&restrict_sr=on&sort=new&q=flair%3A';
   let afterStr = '';
   try {
     if (after !== null) {
