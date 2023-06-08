@@ -2,10 +2,10 @@
 // TODO: HDR triggers HD in regex
 const monitorResolutions = [
   [/u(ltra)?\s?wqhd/i, 3440, 1440],
-  [/w?qhd/i, 2560, 1440],
-  [/(f(ull)?)?[\s_-]?hd/i, 1920, 1080],
   [/u(ltra[\s_-]?)?hd/i, 3840, 2160],
   [/4k/i, 3840, 2160],
+  [/w?qhd/i, 2560, 1440],
+  [/(f(ull)?)?[\s_-]?hd/i, 1920, 1080],
 ];
 const resolutionReg = /\d{4}\s?x?\s?\d{4}/i;
 const resolutionRegP = /\d{4}\s?p/i;
@@ -47,7 +47,7 @@ export default function parseMonitorDetails(title) {
       vRes = resolutionMatchP[0].replace(/\D/g, '');
       monitorItem.vRes = parseInt(vRes);
     } else {
-      // FHD etc matching
+      // FHD, 4k, wqhd etc matching
       for (let r of monitorResolutions) {
         if (title.match(r[0])) {
           monitorItem.hRes = r[1];
@@ -77,7 +77,6 @@ export default function parseMonitorDetails(title) {
   }
 
   // Panel Type
-  // TODO: VA panel
   if (title.match(/\Wips\W/i)) {
     monitorItem.panel = 'ips';
   } else if (title.match(/\Woled\W/i)) {

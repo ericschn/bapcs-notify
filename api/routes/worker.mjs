@@ -6,75 +6,37 @@ export const workerRouter = express.Router();
 
 const postsCollection = db.collection('posts');
 
-// TODO: STATE NOT RELIABLE - data can change if post becomes deleted
-// maybe switch to looking at time posted combined with reddit id
-let prevRedditJson = null;
-
-// Get the 25 posts from bapcs/new and add new posts to db
-workerRouter.get('/', async (req, res) => {
-  // console.log('GET: /fetch-new');
-  const newRedditJson = await getRedditNew();
-  if (!newRedditJson[0]) {
-    // res.status(500);
-    // res.send('Cannot get reddit json: ' + newRedditJson[1]);
-    res.status(500).send('-1');
-    return;
-  }
-
-  if (compareRedditJson(prevRedditJson, newRedditJson)) {
-    // console.log('No new posts since last check');
-    res.send('0');
-    return;
-  }
-
-  prevRedditJson = newRedditJson;
-  const dbPosts = await postsCollection
-    .find({})
-    .sort({ created: -1 })
-    .limit(50)
-    .toArray();
-
-  let newJsonToAdd = checkDuplicates(newRedditJson, dbPosts);
-
-  if (newJsonToAdd.length > 0) {
-    const posts = parseRedditJson(newJsonToAdd);
-    const insertResult = await postsCollection.insertMany(posts, {});
-    console.log(`${insertResult.insertedCount} documents were inserted`);
-    res.send('1');
-  } else {
-    console.log('0 documents were inserted');
-    res.send('0');
-  }
-});
-
+// Main worker job, runs every minute
 // Gets 100 posts, adds new posts and updates existing
 workerRouter.get('/update', async (req, res) => {
+  let response = '';
   const redditNew = await getRedditNew(100);
+
   if (!redditNew[0]) {
-    // Cannot get reddit json
-    res.status(500).send('-1');
+    // Reddit server error
+    response = '-1';
+    res.status(500).send(response);
     return;
   }
 
+  // Get most recent 50 posts from db
   const dbPosts = await postsCollection
     .find({})
     .sort({ created: -1 })
     .limit(50)
     .toArray();
 
-  // Add new posts if any
-  let response = '';
+  // Check for duplicates and add new posts
   let newJsonToAdd = checkDuplicates(redditNew, dbPosts);
   if (newJsonToAdd.length > 0) {
     const posts = parseRedditJson(newJsonToAdd);
     await postsCollection.insertMany(posts, {});
     response = '1';
   } else {
-    console.log('0 documents were inserted');
     response = '0';
   }
 
-  // Update
+  // Update existing database posts
   let bulkUpdates = [];
   for (let redditPost of redditNew) {
     bulkUpdates.push({
@@ -92,33 +54,6 @@ workerRouter.get('/update', async (req, res) => {
   const result = await postsCollection.bulkWrite(bulkUpdates);
 
   res.send(response);
-});
-
-// Gets 100 posts from reddit and updates matching db posts with
-// upvotes and if it's expired
-workerRouter.get('/update-old', async (req, res) => {
-  const timeStart = Date.now();
-  const redditNew = await getRedditNew(100);
-  let bulkUpdates = [];
-  for (let redditPost of redditNew) {
-    bulkUpdates.push({
-      updateOne: {
-        filter: { id: redditPost.data.id },
-        update: {
-          $set: {
-            expired: redditPost.data.link_flair_css_class === 'expired',
-            upvotes: redditPost.data.ups,
-          },
-        },
-      },
-    });
-  }
-  const result = await postsCollection.bulkWrite(bulkUpdates);
-  const timeEnd = Date.now();
-  console.log(
-    '/update took ' + (timeEnd - timeStart) + 'ms updating 100 documents'
-  );
-  res.send(result);
 });
 
 // Admin function to populate an empty db
