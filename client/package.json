@@ -7,7 +7,7 @@
     "start": "vite",
     "host": "vite --host",
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --emptyOutDir",
     "preview": "vite preview --host"
   },
   "dependencies": {
