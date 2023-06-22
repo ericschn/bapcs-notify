@@ -6,14 +6,12 @@ export default function parseRedditJson(posts) {
     let newPost = {
       id: post.data.id,
       created: post.data.created_utc,
-      shortTitle: shortenRedditPostTitle(post.data.title),
-      title: post.data.title,
+      title: shortenRedditPostTitle(post.data.title),
       link: post.data.url,
       domain: post.data.domain,
       price: parsePrice(post.data.title),
       type: post.data.link_flair_css_class,
       detail: parseTypeDetail(post.data),
-      brand: '', // TODO: put brand in detail
       reddit: parseRedditInfo(post.data),
       upvotes: post.data.ups,
       expired: parseExpired(post.data),
@@ -25,7 +23,8 @@ export default function parseRedditJson(posts) {
 }
 
 function shortenRedditPostTitle(title) {
-  return title.replace(/\[.*\]/, '').replace(/[-[{(\s\u2013]*?\$.*$/, '');
+  // return title.replace(/\[.*\]/, '').replace(/[-[{(\s\u2013]*?\$.*$/, '');
+  return title.replace(/\[.*\]/, '').trim();
 }
 
 function parsePrice(title) {

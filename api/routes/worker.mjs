@@ -56,7 +56,8 @@ workerRouter.get('/update', async (req, res) => {
   res.send(response);
 });
 
-// Admin function to populate an empty db
+// Admin function
+// Populates empty database
 workerRouter.get('/populate-empty', async (req, res) => {
   const prelimAfter = '11kp20w'; // null or 12mbk9a etc...
   let redditNew = await getRedditNew(100, prelimAfter);
@@ -88,7 +89,8 @@ workerRouter.get('/populate-empty', async (req, res) => {
   res.send(insertResult);
 });
 
-// Monitor testing, delete all monitor posts from 6 days ago and re-parse
+// Admin function
+// Monitor testing, delete all monitor posts from n days ago and re-parses
 workerRouter.get('/monitor', async (req, res) => {
   // Get time in epoch seconds 6 days ago
   const tenDaysAgo = Math.floor(Date.now() / 1000) - 518400;
@@ -125,7 +127,7 @@ workerRouter.get('/monitor', async (req, res) => {
     }
   }
 
-  const insertResult = await postsCollection.insertMany(posts, {});
+  const insertResult = await postsCollection.insertMany(nonDupePosts, {});
   console.log(`${insertResult.insertedCount} documents were inserted`);
   res.send(insertResult.insertedCount.toString());
 });

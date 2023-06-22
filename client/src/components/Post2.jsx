@@ -1,4 +1,4 @@
-import {PostDetail} from './PostDetail.jsx';
+import { PostDetail } from './PostDetail.jsx';
 
 export function Post2({ post }) {
   if (post.title.length > 90) {
@@ -26,23 +26,17 @@ export function Post2({ post }) {
   // console.log(post);
 
   return (
-    <div
-      className={
-        post.expired ? 'post2 expired' : 'post2'
-      }
-    >
+    <div className={post.expired ? 'post2 expired' : 'post2'}>
       <div className="post-top">
-
-
-          {/* DDR5 6200 32GB (2X16) */}
-          {/* {post.detail ? Object.values(post.detail) : ''} */}
-          <PostDetail post={post} />
+        {/* DDR5 6200 32GB (2X16) */}
+        {/* {post.detail ? Object.values(post.detail) : ''} */}
+        <PostDetail post={post} />
 
         <div className="price">${Math.ceil(post.price)}</div>
       </div>
 
       <div className="post-bottom">
-        <div>{post.title}</div>
+        <div>{post.title.replace(/\[.*\]/, '').trim()}</div>
         <a href={'https://reddit.com/' + post.id} target="_blank">
           {'reddit.com/' + post.id}
         </a>

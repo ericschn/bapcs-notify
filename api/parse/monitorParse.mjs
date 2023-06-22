@@ -17,6 +17,7 @@ const freesyncReg = /free\s?-?sync/i;
 
 export default function parseMonitorDetails(title) {
   let monitorItem = {
+    brand: null,
     inches: null,
     hz: null,
     hRes: null,
@@ -120,6 +121,7 @@ export default function parseMonitorDetails(title) {
     'Viewsonic',
     'ASRock',
     'Sony',
+    'Pixio'
   ];
 
   // TODO: if brand not found in title, look in url
