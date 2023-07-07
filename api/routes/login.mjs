@@ -3,23 +3,30 @@ import db from '../db/conn.mjs';
 // import jsonwebtoken from 'jsonwebtoken';
 export const loginRouter = express.Router();
 
-const postsCollection = db.collection('posts');
+const usersCollection = db.collection('users');
 
 // Get login info
-loginRouter.get('/', async (req, res) => {
-  console.log('GET: /posts');
-  let results = await postsCollection
-    .find({})
-    .sort({ created: -1 })
-    .limit(1000) // TODO: not 1000
-    .toArray();
+loginRouter.post('/auth', async (req, res) => {
+  console.log('POST: /login/auth');
+  const { email, password } = req.body;
+  const user = await usersCollection.findOne({ email });
 
-  if (results.length > 0) {
-    res.send(results);
+  if (user && user.password === password) {
+
+    res.cookie('jwt', "testToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production
+      sameSite: 'strict', // Prevent CSRF attacks
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    });
+
+    res.json({
+      _id: user._id,
+      email: user.email,
+      favorites: user.favorites,
+    });
   } else {
-    console.log('Error getting posts from db');
-    res.status(500);
-    res.send([]);
+    res.status(401).json({"error":"invalid credentials"});
   }
 });
 

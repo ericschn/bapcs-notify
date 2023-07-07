@@ -12,6 +12,8 @@ const router = express.Router();
 
 initializeApp();
 
+app.use(express.json());
+
 // set route prefix
 app.use('/api/v1', router);
 
