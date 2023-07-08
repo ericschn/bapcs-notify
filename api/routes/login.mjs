@@ -1,22 +1,27 @@
 import express from 'express';
 import db from '../db/conn.mjs';
-// import jsonwebtoken from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 export const loginRouter = express.Router();
 
 const usersCollection = db.collection('users');
 
-// Get login info
+// User login
 loginRouter.post('/auth', async (req, res) => {
   console.log('POST: /login/auth');
   const { email, password } = req.body;
   const user = await usersCollection.findOne({ email });
 
   if (user && user.password === password) {
+    // TODO: bcrypt
+    const userId = user._id;
+    const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+      expiresIn: '30d',
+    });
 
-    res.cookie('jwt', "testToken", {
+    res.cookie('jwt', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production
-      sameSite: 'strict', // Prevent CSRF attacks
+      secure: process.env.NODE_ENV !== 'development',
+      sameSite: 'strict',
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
 
@@ -26,8 +31,18 @@ loginRouter.post('/auth', async (req, res) => {
       favorites: user.favorites,
     });
   } else {
-    res.status(401).json({"error":"invalid credentials"});
+    res.status(401).json({ error: 'invalid credentials' });
   }
+});
+
+// Register new user
+loginRouter.post('/auth', async (req, res) => {
+  // TODO
+});
+
+// Logout current user
+loginRouter.get('/logout', (req, res) => {
+  // TODO
 });
 
 loginRouter.post('/', (req, res) => {
