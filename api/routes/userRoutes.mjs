@@ -84,5 +84,9 @@ userRouter.post('/register', async (req, res) => {
 
 // Logout current user
 userRouter.get('/logout', (req, res) => {
-  // TODO
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.status(200).json({ message: 'User successfully logged out' });
 });
