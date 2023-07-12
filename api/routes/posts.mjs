@@ -5,24 +5,29 @@ import parseByType from '../parse/reparse.mjs';
 export const postsRouter = express.Router();
 
 const postsCollection = db.collection('posts');
-let postsCache = { createdTime: 0, posts: [] };
+const postsCache = { createdTime: 0, posts: [], length: 0 };
 
 // Get most recent 250 posts from db
 postsRouter.get('/', async (req, res) => {
   console.log('GET: /posts ' + Date.now());
 
   // Cache
-  if (postsCache.createdTime < Date.now() - 1000 * 60) {
+  if (
+    postsCache.createdTime < Date.now() - 1000 * 60 ||
+    postsCache.length === 0
+  ) {
     // Refresh cache
-    let dbResult = await postsCollection
+    const dbResult = await postsCollection
       .find({})
       .sort({ created: -1 })
       .limit(250)
       .toArray();
-    postsCache = { createdTime: Date.now(), posts: dbResult };
+    postsCache.createdTime = Date.now();
+    postsCache.posts = dbResult;
+    postsCache.length = postsCache.posts.length;
   }
 
-  if (postsCache.posts.length > 0) {
+  if (postsCache.length > 0) {
     res.send(postsCache.posts);
   } else {
     console.log('Error getting posts from db');

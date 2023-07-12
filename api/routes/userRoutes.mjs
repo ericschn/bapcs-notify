@@ -1,18 +1,19 @@
 import express from 'express';
 import db from '../db/conn.mjs';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 export const userRouter = express.Router();
 
-const usersCollection = db.collection('users');
+const usersDb = db.collection('users');
 
 // User login
+// POST /user/auth
 userRouter.post('/auth', async (req, res) => {
   console.log('POST: /user/auth');
   const { email, password } = req.body;
-  const user = await usersCollection.findOne({ email });
+  const user = await usersDb.findOne({ email });
 
-  if (user && user.password === password) {
-    // TODO: bcrypt
+  if (user && bcrypt.compareSync(password, user.password)) {
     const userId = user._id;
     const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
       expiresIn: '30d',
@@ -36,6 +37,7 @@ userRouter.post('/auth', async (req, res) => {
 });
 
 // Register new user
+// POST /user/register
 userRouter.post('/register', async (req, res) => {
   console.log('POST: /user/register');
 
@@ -44,38 +46,44 @@ userRouter.post('/register', async (req, res) => {
   try {
     // Validate email
     if (!email || !email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,8}$/)) {
-      throw new Error('bad email');
+      throw new Error('invalid email');
     }
 
     // Validate password
     if (!password || !password.match(/^[\w\d!\@\#\$\%\^\&\*\?]{8,128}$/)) {
-      throw new Error('bad password');
+      throw new Error('invalid password');
     }
 
     // Validate phone
     if (!phone) {
       phone = 0;
     } else if (phone.toString().length !== 10) {
-      throw new Error('bad phone');
+      throw new Error('invalid phone');
     }
 
     // Validate notification settings
     // TODO
 
     // Check for existing user
-    const existingUser = await usersCollection.findOne({ email });
+    const existingUser = await usersDb.findOne({ email });
     if (existingUser) throw new Error('user already exists');
 
     // Add new user to db
-    // TODO
-
-    // Make a cookie
-    // TODO
-
-    res.json({
+    const hashedPass = hashPassword(password);
+    await usersDb.insertOne({
       email: email,
       phone: phone,
-      password: password,
+      password: hashedPass,
+    });
+    // TODO
+
+    // Eventually require verification email before letting user login
+    // TODO
+
+    res.status(201).json({
+      email: email,
+      phone: phone,
+      password: hashedPass,
     });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -83,6 +91,7 @@ userRouter.post('/register', async (req, res) => {
 });
 
 // Logout current user
+// GET /user/logout
 userRouter.get('/logout', (req, res) => {
   res.cookie('jwt', '', {
     httpOnly: true,
@@ -90,3 +99,10 @@ userRouter.get('/logout', (req, res) => {
   });
   res.status(200).json({ message: 'User successfully logged out' });
 });
+
+// Helper functions
+
+function hashPassword(pass) {
+  const salt = bcrypt.genSaltSync();
+  return bcrypt.hashSync(pass, salt);
+}
