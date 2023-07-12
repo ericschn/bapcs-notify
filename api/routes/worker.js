@@ -1,7 +1,7 @@
 import express from 'express';
 import axios from 'axios';
-import db from '../db/conn.mjs';
-import parseRedditJson from '../parse/parsing.mjs';
+import db from '../db/conn.js';
+import parseRedditJson from '../parse/parsing.js';
 export const workerRouter = express.Router();
 
 const postsCollection = db.collection('posts');

@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { workerRouter, initializeApp } from './routes/worker.mjs';
-import { postsRouter } from './routes/posts.mjs';
-import { userRouter } from './routes/userRoutes.mjs';
+import { workerRouter, initializeApp } from './routes/worker.js';
+import { postsRouter } from './routes/posts.js';
+import { userRouter } from './routes/userRoutes.js';
 
 const app = express();
 const port = process.env.PORT;

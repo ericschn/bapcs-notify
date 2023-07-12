@@ -1,6 +1,6 @@
-import parseRedditJson from '../parse/parsing.mjs';
-import * as testData from './testData.mjs';
-import monitorPost from '../parse/monitorParse.mjs';
+import parseRedditJson from '../parse/parsing.js';
+import * as testData from './testData.js';
+import monitorPost from '../parse/monitorParse.js';
 
 const testArr = parseRedditJson(testData.json);
 

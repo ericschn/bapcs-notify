@@ -1,7 +1,6 @@
 import express from 'express';
-import db from '../db/conn.mjs';
-import parseRedditJson from '../parse/parsing.mjs';
-import parseByType from '../parse/reparse.mjs';
+import db from '../db/conn.js';
+import parseByType from '../parse/reparse.js';
 export const postsRouter = express.Router();
 
 const postsCollection = db.collection('posts');

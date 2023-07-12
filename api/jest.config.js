@@ -1,6 +1,6 @@
 const config = {
   moduleFileExtensions: ['mjs', 'js'],
-  testRegex: `test\.mjs$`,
+  testRegex: `test\.js$`,
   transform: {},
 };
 

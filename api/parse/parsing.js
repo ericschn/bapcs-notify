@@ -1,4 +1,4 @@
-import parseMonitorDetails from "./monitorParse.mjs";
+import parseMonitorDetails from "./monitorParse.js";
 
 export default function parseRedditJson(posts) {
   let result = [];

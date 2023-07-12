@@ -1,5 +1,5 @@
 import express from 'express';
-import db from '../db/conn.mjs';
+import db from '../db/conn.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 export const userRouter = express.Router();
