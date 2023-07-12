@@ -2,6 +2,7 @@ import express from 'express';
 import db from '../db/conn.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { protect } from '../middleware/authMiddleware.js';
 export const userRouter = express.Router();
 
 const usersDb = db.collection('users');
@@ -98,6 +99,12 @@ userRouter.get('/logout', (req, res) => {
     expires: new Date(0),
   });
   res.status(200).json({ message: 'User successfully logged out' });
+});
+
+// User profile
+// GET /user/profile
+userRouter.route('/profile').get(protect, (req, res) => {
+  res.json(req.user);
 });
 
 // Helper functions

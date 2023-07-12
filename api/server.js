@@ -19,10 +19,10 @@ router.use('/worker', workerRouter);
 router.use('/posts', postsRouter);
 router.use('/user', userRouter);
 
-app.get('/', (req, res) => {
-  res.status(404).send();
-});
-app.get('*', (req, res) => res.redirect('/'));
+// app.get('/', (req, res) => {
+//   res.status(404).send();
+// });
+// app.get('*', (req, res) => res.redirect('/'));
 
 app.listen(port, () => {
   console.log(`API running on port ${port}`);
