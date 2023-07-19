@@ -93,7 +93,7 @@ userRouter.post('/register', async (req, res) => {
 
 // Logout current user
 // GET /user/logout
-userRouter.get('/logout', (req, res) => {
+userRouter.post('/logout', (req, res) => {
   res.cookie('jwt', '', {
     httpOnly: true,
     expires: new Date(0),
@@ -101,10 +101,34 @@ userRouter.get('/logout', (req, res) => {
   res.status(200).json({ message: 'User successfully logged out' });
 });
 
-// User profile
+// User profile view
 // GET /user/profile
 userRouter.route('/profile').get(protect, (req, res) => {
-  res.json(req.user);
+  res.status(200).json(req.user);
+});
+
+// User profile update
+// PUT /user/profile
+userRouter.route('/profile').put(protect, async (req, res) => {
+  const user = req.user;
+
+  user.phone = req.body.phone;
+
+  // Changing notification preferences
+  user.notifications = {
+    app: req.body.notificationsApp,
+    email: req.body.notificationsEmail,
+    phone: req.body.notificationsPhone,
+  };
+
+  // Update db
+  const result = await usersDb.updateOne(
+    { _id: req.user._id },
+    { $set: { phone: user.phone, notifications: user.notifications } },
+    { upsert: false }
+  );
+
+  res.status(200).json(result);
 });
 
 // Helper functions
