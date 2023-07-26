@@ -4,8 +4,7 @@ import axios from 'axios';
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
 const useAxios = () => {
-  const [response, setResponse] = useState({});
-  // const [apiPath, setApiPath] = useState('');
+  const [response, setResponse] = useState(null);
   const [axiosConfig, setAxiosConfig] = useState({
     url: '',
     method: 'get',

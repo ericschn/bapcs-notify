@@ -13,17 +13,12 @@ export function Profile() {
       method: 'get',
       withCredentials: true,
     });
-    console.log(user);
   }, []);
-
-  useEffect(() => {
-    console.log(`isLoading: ${isLoading} - user.email: ${user.email}`);
-  }, [isLoading]);
 
   return (
     <div>
       <h1>profile</h1>
-      {isLoading ? (
+      {!user ? (
         <p>loading</p>
       ) : (
         <ul>
