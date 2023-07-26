@@ -156,3 +156,14 @@ a:active {
 .expired {
   background-color: rgb(255 172 165);
 }
+
+/* login form */
+
+.login-form {
+  margin: 20px;
+}
+
+.login-form input {
+  display: block;
+  margin-bottom: 20px;
+}

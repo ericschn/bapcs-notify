@@ -6,6 +6,8 @@ export function Navbar() {
       <ul>
         <li><Link to="/">home</Link></li>
         <li><Link to="/new">new</Link></li>
+        <li><Link to="/login">login</Link></li>
+        <li><Link to="/profile">profile</Link></li>
         {/* <li><Link to="/monitors">monitors</Link></li> */}
       </ul>
     </nav>
