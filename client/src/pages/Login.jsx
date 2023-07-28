@@ -1,22 +1,36 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import useAxios from '../hooks/useAxios';
+import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [{ response: user, isLoading, isError }, axiosRequest] = useAxios();
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  const submitFormHandler = async (e) => {
+  const submitFormHandler = (e) => {
     e.preventDefault();
+    handleUserLogin();
+  };
 
-    axiosRequest({
+  const handleUserLogin = async () => {
+    await axiosRequest({
       url: '/user/auth',
       method: 'post',
       data: { email, password },
       withCredentials: true,
     });
   };
+
+  useEffect(() => {
+    if (user) {
+      setIsLoggedIn(true);
+      navigate('/profile');
+    }
+  }, [user]);
 
   return (
     <div className="login-form">

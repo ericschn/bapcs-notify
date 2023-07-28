@@ -26,7 +26,9 @@ const useAxios = () => {
   };
 
   useEffect(() => {
-    if (axiosConfig.url !== '') fetchData();
+    if (axiosConfig.url !== '') {
+      fetchData();
+    }
   }, [axiosConfig]);
 
   return [{ response, isLoading, isError }, setAxiosConfig];
