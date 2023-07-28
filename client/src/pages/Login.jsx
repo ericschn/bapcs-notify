@@ -22,19 +22,21 @@ export function Login() {
     <div className="login-form">
       <h1>login</h1>
       <form onSubmit={submitFormHandler}>
-        <label>email</label>
+        <label htmlFor="email-input">email</label>
         <input
-          type="text"
-          // required
+          type="email"
+          id="email-input"
+          required
           placeholder="enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <label>password</label>
+        <label htmlFor="password-input">password</label>
         <input
-          type="text"
-          // required
+          type="password"
+          id="password-input"
+          required
           placeholder="enter password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

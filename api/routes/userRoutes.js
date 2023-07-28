@@ -42,7 +42,7 @@ userRouter.post('/auth', async (req, res) => {
 userRouter.post('/register', async (req, res) => {
   console.log('POST: /user/register');
 
-  const { email, phone, password } = req.body;
+  const { email, password } = req.body;
 
   try {
     // Validate email
@@ -56,11 +56,11 @@ userRouter.post('/register', async (req, res) => {
     }
 
     // Validate phone
-    if (!phone) {
-      phone = 0;
-    } else if (phone.toString().length !== 10) {
-      throw new Error('invalid phone');
-    }
+    // if (!phone) {
+    //   phone = 0;
+    // } else if (phone.toString().length !== 10) {
+    //   throw new Error('invalid phone');
+    // }
 
     // Validate notification settings
     // TODO
@@ -73,9 +73,10 @@ userRouter.post('/register', async (req, res) => {
     const hashedPass = hashPassword(password);
     await usersDb.insertOne({
       email: email,
-      phone: phone,
+      phone: null,
       password: hashedPass,
     });
+    console.log('Created new user: ' + email);
     // TODO
 
     // Eventually require verification email before letting user login
@@ -83,10 +84,11 @@ userRouter.post('/register', async (req, res) => {
 
     res.status(201).json({
       email: email,
-      phone: phone,
+      phone: null,
       password: hashedPass,
     });
   } catch (err) {
+    console.log('/register ERROR');
     res.status(400).json({ error: err.message });
   }
 });

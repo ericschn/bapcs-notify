@@ -8,7 +8,7 @@ const postsCache = { createdTime: 0, posts: [], length: 0 };
 
 // Get most recent 250 posts from db
 postsRouter.get('/', async (req, res) => {
-  console.log('GET: /posts ' + Date.now());
+  // console.log('GET: /posts ' + Date.now());
 
   // Cache
   if (

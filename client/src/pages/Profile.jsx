@@ -18,6 +18,8 @@ export function Profile() {
   return (
     <div>
       <h1>profile</h1>
+      {isError && <h3>You are not logged in</h3>}
+      {/* maybe make redirect to login page? */}
       {!user ? (
         <p>loading</p>
       ) : (

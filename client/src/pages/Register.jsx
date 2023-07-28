@@ -1,60 +1,77 @@
 import { useState } from 'react';
+import useAxios from '../hooks/useAxios';
 
 export function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [{ res, isLoading, isError }, axiosRequest] = useAxios();
-
-  const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL, // test if needed
-  });
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [{ response: user, isLoading, isError }, axiosRequest] = useAxios();
 
   const submitFormHandler = async (e) => {
     e.preventDefault();
 
-    console.log('submitFormHandler');
-
-    axiosRequest({
-      url: '/user/auth',
-      method: 'post',
-      data: { email, password },
-      withCredentials: true,
-    });
-
-    console.log(res);
+    if (password !== confirmPassword) {
+      // set form errors
+      console.log("passwords don't match");
+    } else {
+      axiosRequest({
+        url: '/user/register',
+        method: 'post',
+        data: { email, password },
+        withCredentials: true,
+      });
+    }
   };
 
   return (
     <div className="login-form">
       <h1>register</h1>
       <form onSubmit={submitFormHandler}>
-        <label>email</label>
+        <label htmlFor="email-input">email</label>
         <input
           type="email"
+          id="email-input"
           required
           placeholder="enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <label>password</label>
+        <label htmlFor="password-input">password</label>
         <input
           type="password"
+          id="password-input"
           required
           placeholder="enter password"
           value={password}
+          autoComplete="off"
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <label>confirm password</label>
+        <label htmlFor="password-input">confirm password</label>
         <input
           type="password"
+          id="confirm-password-input"
           required
           placeholder="confirm password"
           value={confirmPassword}
+          autoComplete="off"
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
+
+        <button disabled={isLoading} type="submit">
+          submit
+        </button>
       </form>
+      <div>{isLoading && <h2>loading</h2>}</div>
+      <div>{isError && <h2>invalid credentials</h2>}</div>
+
+      {user && (
+        <ul>
+          <li>Email: {user.email}</li>
+          <li>Id: {user._id}</li>
+        </ul>
+      )}
     </div>
   );
 }

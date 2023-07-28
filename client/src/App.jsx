@@ -7,6 +7,7 @@ import { Home } from './components/Home';
 import { PostList } from './components/PostList';
 import { Login } from './pages/Login';
 import { Profile } from './pages/Profile';
+import { Register } from './pages/Register';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/new/:typeFilter?" element={<PostList />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
     </div>
