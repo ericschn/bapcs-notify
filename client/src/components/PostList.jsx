@@ -20,8 +20,8 @@ export function PostList() {
     if (needData) {
       axios.get(`${import.meta.env.VITE_API_URL}/posts`).then((res) => {
         for (let post of res.data) {
-          // postsArr.push(<Post key={post.id} post={post} />);
-          postsArr.push(<Post2 key={post.id} post={post} />);
+          postsArr.push(<Post key={post.id} post={post} />);
+          // postsArr.push(<Post2 key={post.id} post={post} />);
         }
         setPosts(postsArr);
       });

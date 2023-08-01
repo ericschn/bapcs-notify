@@ -1,0 +1,73 @@
+.post-container {
+  margin: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.post-detail {
+  height: 108px;
+  overflow: hidden;
+  padding: 2px 6px 4px 6px;
+}
+
+.post-type {
+  font-weight: bold;
+  font-size: 24px;
+  margin-right: 8px;
+}
+
+.post-price {
+  font-weight: bold;
+  font-size: 24px;
+  float: right;
+}
+
+.post-table td {
+  width: 92px;
+}
+
+.unknown-detail {
+  color: lightslategrey;
+}
+
+.post-info-label {
+  color: lightgray;
+  font-size: 12px;
+  margin-bottom: -4px;
+}
+
+/* Time ago and domain */
+
+.post-bottom-info {
+  height: 18px;
+  padding: 0 6px;
+  color: lightgrey;
+}
+
+.post-time-ago {
+  float: left;
+  font-size: 12px;
+}
+
+.post-domain {
+  float: right;
+  font-size: 12px;
+}
+
+/* Post buttons */
+
+.post-buttons {
+  padding: 8px 14px;
+  background-color: #b9e8f7;
+  border-radius: 0 0 8px 8px;
+}
+
+.post-buttons-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post-buttons-container img {
+  display: block;
+}

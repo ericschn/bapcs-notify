@@ -1,3 +1,7 @@
+import './Post.css';
+import { PostButtons } from './PostButtons';
+import { PostDetail } from './PostDetail';
+
 export function Post({ post }) {
   if (post.title.length > 50) {
     post.title = post.title.substring(0, 50) + '...';
@@ -21,28 +25,20 @@ export function Post({ post }) {
   }
 
   return (
-    <div
-      className={
-        post.type === 'expired' || post.expired ? 'post expired' : 'post'
-      }
-    >
-      <div className="post-top">
-        <a className="post-title" href={post.link} target="_blank">
-          {post.title}
-        </a>
+    <div className="post-container">
+      <div className="post-content">
+        <PostDetail post={post} />
       </div>
-      <div className="post-bottom">
-        <div>
-          {post.type} - ${Math.ceil(parseFloat(post.price))} - {post.domain}
+
+      <div className="post-bottom-info">
+        <div className="post-time-ago">
+          {timeAgo} {timeAmount} ago
         </div>
-        <a href={'https://reddit.com/' + post.id} target="_blank">
-          {post.id} reddit link
-        </a>
-        <span> - upvotes: {post.upvotes}</span>
-        <div>
-          {timeAgo} {timeAmount} ago - {post.created}
-        </div>
+
+        <div className="post-domain">{post.domain}</div>
       </div>
+
+      <PostButtons post={post} />
     </div>
   );
 }
