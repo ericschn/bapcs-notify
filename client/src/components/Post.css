@@ -1,3 +1,7 @@
+:root {
+  --gray-text: #6d6d6d;
+}
+
 .post-container {
   margin: 20px;
   background-color: white;
@@ -6,7 +10,7 @@
 }
 
 .post-detail {
-  height: 108px;
+  height: 120px;
   overflow: hidden;
   padding: 2px 6px 4px 6px;
 }
@@ -32,7 +36,7 @@
 }
 
 .post-info-label {
-  color: lightgray;
+  color: var(--gray-text);
   font-size: 12px;
   margin-bottom: -4px;
 }
@@ -42,7 +46,7 @@
 .post-bottom-info {
   height: 18px;
   padding: 0 6px;
-  color: lightgrey;
+  color: var(--gray-text);
 }
 
 .post-time-ago {
@@ -70,4 +74,5 @@
 
 .post-buttons-container img {
   display: block;
+  cursor: pointer;
 }

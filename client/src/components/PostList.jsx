@@ -12,9 +12,9 @@ export function PostList() {
   let postsArr = [];
   let needData = true;
 
-  if (typeFilter !== '') {
-    console.log('new filter: ' + typeFilter);
-  }
+  // if (typeFilter !== '') {
+  //   console.log('new filter: ' + typeFilter);
+  // }
 
   useEffect(() => {
     if (needData) {

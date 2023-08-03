@@ -1,12 +1,11 @@
-export function PostDetail({ post }) {
+export function PostDetail({ post, showFullTitle }) {
   let type = post.type;
   let detailKey = '';
   let details = [];
   let dash = '—';
   let price = `$${Math.ceil(parseFloat(post.price))}`;
-  let defaultTitle = '';
 
-  console.log(post);
+  const fullTitle = post.reddit.title.replace(/^\[.+?\]\s?/, '')
 
   // TODO: Module for detail formatting
 
@@ -88,7 +87,7 @@ export function PostDetail({ post }) {
 
       default:
         type = post.type;
-        defaultTitle = post.reddit.title.replace(/^\[.+?\]\s?/, '');
+        showFullTitle = true;
     }
   } catch {
     console.log('error building post detail');
@@ -102,7 +101,7 @@ export function PostDetail({ post }) {
         <span className="post-price">{price}</span>
       </div>
 
-      {details.length > 1 && (
+      {showFullTitle ? fullTitle : (
         <div className="post-table">
           <table>
             <tbody>
@@ -120,7 +119,7 @@ export function PostDetail({ post }) {
           </table>
         </div>
       )}
-      {defaultTitle}
+      {/* {defaultTitle} */}
     </div>
   );
 }

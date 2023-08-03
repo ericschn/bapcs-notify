@@ -18,8 +18,6 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    console.log('user useEffect triggered:');
-    console.log(user);
     if (user && user._id) {
       setIsLoggedIn(true);
     }
@@ -27,7 +25,6 @@ export function Navbar() {
 
   const logoutHandler = async () => {
     try {
-      console.log('logoutHandler running');
       axiosRequest({
         url: '/user/logout',
         method: 'post',

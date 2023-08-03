@@ -1,11 +1,18 @@
+import { useState } from 'react';
 import './Post.css';
 import { PostButtons } from './PostButtons';
 import { PostDetail } from './PostDetail';
 
 export function Post({ post }) {
-  if (post.title.length > 50) {
-    post.title = post.title.substring(0, 50) + '...';
-  }
+  const [showFullTitle, setShowFullTitle] = useState(false);
+
+  const descriptionSwap = () => {
+    setShowFullTitle(!showFullTitle);
+  };
+
+  // if (post.title.length > 50) {
+  //   post.title = post.title.substring(0, 50) + '...';
+  // }
 
   // Calculate time since posting
   // TODO: make this a module, maybe use dayjs lib
@@ -27,7 +34,7 @@ export function Post({ post }) {
   return (
     <div className="post-container">
       <div className="post-content">
-        <PostDetail post={post} />
+        <PostDetail post={post} showFullTitle={showFullTitle} />
       </div>
 
       <div className="post-bottom-info">
@@ -38,7 +45,7 @@ export function Post({ post }) {
         <div className="post-domain">{post.domain}</div>
       </div>
 
-      <PostButtons post={post} />
+      <PostButtons post={post} descriptionSwap={descriptionSwap} />
     </div>
   );
 }
