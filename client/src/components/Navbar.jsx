@@ -66,6 +66,12 @@ export function Navbar() {
           </>
         )}
         {/* <li><Link to="/monitors">monitors</Link></li> */}
+
+          <li className='navbar-toggle'>
+            <label for="toggle-old-reddit">use old.reddit.com links</label>
+            <input type='checkbox'></input>
+          </li>
+
       </ul>
     </nav>
   );

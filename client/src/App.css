@@ -165,3 +165,7 @@ a:active {
   display: block;
   margin-bottom: 20px;
 }
+
+.navbar-toggle {
+  float: right;
+}
