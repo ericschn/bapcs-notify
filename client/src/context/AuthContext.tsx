@@ -1,7 +1,6 @@
-// AuthContext.js
 import { createContext, useState } from 'react';
 
-const AuthContext: React.Context<{}> = createContext({});
+const AuthContext: React.Context<any> = createContext({});
 
 const AuthProvider = ({ children }: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

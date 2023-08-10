@@ -1,14 +1,27 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 
-const useAxios = () => {
-  const [response, setResponse] = useState(null);
-  const [axiosConfig, setAxiosConfig] = useState({
+interface IAxiosConfig {
+  url: string;
+  method: string;
+  data?: object;
+  withCredentials: boolean;
+}
+
+interface useAxiosReturn {}
+
+const useAxios = (): [
+  { response: any; isLoading: any; isError: any },
+  React.Dispatch<React.SetStateAction<IAxiosConfig>>
+] => {
+  const [response, setResponse] = useState<object>({});
+  const [axiosConfig, setAxiosConfig] = useState<IAxiosConfig>({
     url: '',
     method: 'get',
     data: {},
+    withCredentials: false,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -31,7 +44,9 @@ const useAxios = () => {
     }
   }, [axiosConfig]);
 
-  return [{ response, isLoading, isError }, setAxiosConfig];
+  let returnObj = { response, isLoading, isError };
+
+  return [returnObj, setAxiosConfig];
 };
 
 export default useAxios;

@@ -55,7 +55,9 @@ export function Navbar() {
               <Link to="/profile">profile</Link>
             </li>
             <li>
-              <Link onClick={logoutHandler}>logout</Link>
+              <Link to="" onClick={logoutHandler}>
+                logout
+              </Link>
             </li>
           </>
         ) : (

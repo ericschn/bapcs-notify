@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
 import useAxios from '../hooks/useAxios';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -8,10 +7,10 @@ export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [{ response: user, isLoading, isError }, axiosRequest] = useAxios();
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const submitFormHandler = (e) => {
+  const submitFormHandler = (e: any) => {
     e.preventDefault();
     handleUserLogin();
   };
@@ -26,7 +25,7 @@ export function Login() {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user._id) {
       setIsLoggedIn(true);
       navigate('/profile');
     }

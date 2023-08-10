@@ -3,7 +3,11 @@ import './Post.css';
 import { PostButtons } from './PostButtons';
 import { PostDetail } from './PostDetail';
 
-export function Post({ post }) {
+interface PostProps {
+  post: any;
+}
+
+export function Post({ post }: PostProps) {
   const [showFullTitle, setShowFullTitle] = useState(false);
 
   const descriptionSwap = () => {
