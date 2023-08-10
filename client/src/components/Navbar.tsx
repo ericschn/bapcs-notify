@@ -5,7 +5,10 @@ import { AuthContext } from '../context/AuthContext';
 import { useContext, useEffect } from 'react';
 
 export function Navbar() {
-  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, setIsLoggedIn } = useContext<{
+    isLoggedIn?: any;
+    setIsLoggedIn?: any;
+  }>(AuthContext);
   const [{ response: user, isLoading, isError }, axiosRequest] = useAxios();
 
   useEffect(() => {
@@ -67,11 +70,10 @@ export function Navbar() {
         )}
         {/* <li><Link to="/monitors">monitors</Link></li> */}
 
-          <li className='navbar-toggle'>
-            <label for="toggle-old-reddit">use old.reddit.com links</label>
-            <input type='checkbox'></input>
-          </li>
-
+        <li className="navbar-toggle">
+          <label htmlFor="toggle-old-reddit">use old.reddit.com links</label>
+          <input type="checkbox"></input>
+        </li>
       </ul>
     </nav>
   );
