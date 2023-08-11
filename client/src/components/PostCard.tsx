@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import './Post.css';
+import './PostCard.css';
 import { PostButtons } from './PostButtons';
 import { PostDetail } from './PostDetail';
+import { Post } from '../models/PostModel';
 
 interface PostProps {
-  post: any;
+  post: Post;
 }
 
-export function Post({ post }: PostProps) {
+export function PostCard({ post }: PostProps) {
   const [showFullTitle, setShowFullTitle] = useState(false);
 
   const descriptionSwap = () => {

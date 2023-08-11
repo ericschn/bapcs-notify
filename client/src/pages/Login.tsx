@@ -62,7 +62,7 @@ export function Login() {
       <div>{isLoading && <h2>loading</h2>}</div>
       <div>{isError && <h2>invalid credentials</h2>}</div>
 
-      {user && (
+      {user._id && (
         <ul>
           <li>Email: {user.email}</li>
           <li>Id: {user._id}</li>

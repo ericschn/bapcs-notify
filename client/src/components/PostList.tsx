@@ -1,27 +1,22 @@
+import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Post } from './Post';
+import { PostCard } from './PostCard';
 import { PostFilter } from './PostFilter';
-import { Post2 } from './Post2';
+import { Post } from '../models/PostModel';
 
 export function PostList() {
-  const [posts, setPosts] = useState([]);
-  // const [typeFilter, setTypeFilter] = useState('');
+  const [posts, setPosts] = useState<React.JSX.Element[]>([]);
   const { typeFilter } = useParams();
-  let postsArr = [];
+  let postsArr: React.JSX.Element[] = [];
   let needData = true;
-
-  // if (typeFilter !== '') {
-  //   console.log('new filter: ' + typeFilter);
-  // }
 
   useEffect(() => {
     if (needData) {
       axios.get(`${import.meta.env.VITE_API_URL}/posts`).then((res) => {
         for (let post of res.data) {
-          postsArr.push(<Post key={post.id} post={post} />);
-          // postsArr.push(<Post2 key={post.id} post={post} />);
+          postsArr.push(<PostCard key={post.id} post={post} />);
         }
         setPosts(postsArr);
       });
@@ -31,7 +26,7 @@ export function PostList() {
 
   return (
     <div className="post-list">
-      <PostFilter currentFilter={typeFilter}/>
+      <PostFilter currentFilter={typeFilter} />
       <div className="post-list-wrapper">
         {posts.filter((p) => p.props.post.type === typeFilter || !typeFilter)}
       </div>
