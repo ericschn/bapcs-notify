@@ -1,6 +1,13 @@
-export function PostDetail({ post, showFullTitle }) {
+import { Post } from "../models/PostModel";
+
+interface PostDetailProps {
+  post: Post;
+  showFullTitle: boolean;
+}
+
+export function PostDetail({ post, showFullTitle }: PostDetailProps) {
   let type = post.type;
-  let detailKey = '';
+  let detailKey: JSX.Element = <></>;
   let details = [];
   let dash = '—';
   let price = `$${Math.ceil(parseFloat(post.price))}`;

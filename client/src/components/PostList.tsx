@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { PostCard } from './PostCard';
 import { PostFilter } from './PostFilter';
-import { Post } from '../models/PostModel';
 
 export function PostList() {
   const [posts, setPosts] = useState<React.JSX.Element[]>([]);

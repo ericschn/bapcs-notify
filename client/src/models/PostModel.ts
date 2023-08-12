@@ -4,7 +4,7 @@ export interface Post {
   title: string;
   link: string;
   domain: string;
-  price: number;
+  price: string;
   type: string;
   detail?: any;
   reddit: {

@@ -7,7 +7,7 @@ export function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [{ response: user, isLoading, isError }, axiosRequest] = useAxios();
 
-  const submitFormHandler = async (e) => {
+  const submitFormHandler = async (e: any) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {

@@ -2,8 +2,14 @@ import menuIcon from '../assets/menu.svg';
 import commentIcon from '../assets/comment.svg';
 import shopIcon from '../assets/shop.svg';
 import starIcon from '../assets/star.svg';
+import { Post } from '../models/PostModel';
 
-export function PostButtons({ post, descriptionSwap }) {
+interface PostButtonsProps {
+  post: Post;
+  descriptionSwap: () => void;
+}
+
+export function PostButtons({ post, descriptionSwap }: PostButtonsProps) {
   // The four buttons at the bottom of a post card are:
   // hamburger menu: small modal with other options
   // link to reddit thread
@@ -14,12 +20,10 @@ export function PostButtons({ post, descriptionSwap }) {
 
   // console.log(post);
 
-
-
   return (
     <div className="post-buttons">
       <div className="post-buttons-container">
-        <img src={menuIcon} onClick={descriptionSwap}/>
+        <img src={menuIcon} onClick={descriptionSwap} />
         <a href={redditLink} target="_blank">
           <img src={commentIcon} />
         </a>
