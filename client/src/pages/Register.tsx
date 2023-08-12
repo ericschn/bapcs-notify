@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import useAxios from '../hooks/useAxios';
 
 export function Register() {
@@ -7,7 +7,7 @@ export function Register() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [{ response: user, isLoading, isError }, axiosRequest] = useAxios();
 
-  const submitFormHandler = async (e: any) => {
+  const submitFormHandler = async (e: FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
