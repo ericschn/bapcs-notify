@@ -24,12 +24,14 @@ export function PostButtons({ post, descriptionSwap }: PostButtonsProps) {
     <div className="post-buttons">
       <div className="post-buttons-container">
         <img src={menuIcon} onClick={descriptionSwap} />
-        <a href={redditLink} target="_blank">
+        <a href={redditLink} target="_blank" className='tooltip-container'>
           <img src={commentIcon} />
+          <span className="tooltip-text">reddit comments</span>
         </a>
         <img src={starIcon} />
-        <a href={post.link} target="_blank">
+        <a href={post.link} target="_blank" className='tooltip-container'>
           <img src={shopIcon} />
+          <span className="tooltip-text">link to purchase</span>
         </a>
       </div>
     </div>

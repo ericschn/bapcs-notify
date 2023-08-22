@@ -76,3 +76,41 @@
   display: block;
   cursor: pointer;
 }
+
+.tooltip-container {
+  position: relative;
+}
+
+.tooltip-container .tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 3px;
+
+  position: absolute;
+  width: 120px;
+  bottom: 110%;
+  left: 50%;
+  margin-left: -60px;
+  z-index: 1;
+}
+
+.tooltip-container:hover .tooltip-text {
+  animation: 1.6s tooltip;
+  visibility: visible;
+}
+
+@keyframes tooltip {
+  0% {
+    visibility: hidden;
+  }
+  50% {
+    visibility: hidden;
+  }
+  100% {
+    visibility: visible;
+  }
+}
