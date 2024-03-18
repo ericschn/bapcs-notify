@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-export function PostFilter({ currentFilter }) {
+export function PostFilter({ currentFilter }: {currentFilter: string | undefined} ) {
   const filters = ['cpu', 'gpu', 'ram', 'ssd-m2', 'ssd-sata', 'hdd', 'monitor', 'expired'];
   let links = [];
 
