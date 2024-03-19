@@ -13,9 +13,10 @@ workerRouter.get('/update', async (req, res) => {
   let response = '';
   const redditNew = await getRedditNew(100);
 
-  if (!redditNew[0]) {
+  if (!redditNew.data?.children[0]) {
     // Reddit server error
     response = '-1';
+    response = redditNew;
     res.status(500).send(response);
     return;
   }
@@ -211,7 +212,7 @@ export async function initializeApp() {
 // Gets newest posts from reddit.com/r/buildapcsales
 // limit = number of posts to return, default 25, max 100 - removed for bot detection
 async function getRedditNew(limit = 25, after = null) {
-  const bapcsUrl = 'https://reddit.com/r/buildapcsales/new/.json?raw_json=1';
+  const bapcsUrl = 'https://old.reddit.com/r/buildapcsales/new.json?raw_json=1';
   try {
     let result = await axios.get(`${bapcsUrl}`, {
       timeout: 6000,
@@ -221,7 +222,7 @@ async function getRedditNew(limit = 25, after = null) {
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246',
       },
     });
-    return result.data.data.children;
+    return result.data;
   } catch (error) {
     console.error('API /fetch-new ERROR: ' + error);
     return [null, error];
