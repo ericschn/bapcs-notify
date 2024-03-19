@@ -209,15 +209,11 @@ export async function initializeApp() {
 }
 
 // Gets newest posts from reddit.com/r/buildapcsales
-// limit = number of posts to return, default 25, max 100
+// limit = number of posts to return, default 25, max 100 - removed for bot detection
 async function getRedditNew(limit = 25, after = null) {
   const bapcsUrl = 'https://reddit.com/r/buildapcsales/new/.json?raw_json=1';
-  let afterStr = '';
   try {
-    if (after !== null) {
-      afterStr = `&after=t3_${after}`;
-    }
-    let result = await axios.get(`${bapcsUrl}${afterStr}&limit=${limit}`, {
+    let result = await axios.get(`${bapcsUrl}`, {
       timeout: 6000,
       headers: {
         'accept-encoding': '*',
