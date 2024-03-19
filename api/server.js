@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT;
 const router = express.Router();
 
-initializeApp();
+// initializeApp();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

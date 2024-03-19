@@ -11,15 +11,25 @@ const postsCollection = db.collection('posts');
 // /api/v1/worker/update
 workerRouter.get('/update', async (req, res) => {
   let response = '';
-  const redditNew = await getRedditNew(100);
+  const redditNewRaw = await getRedditNew(100);
 
-  if (!redditNew.data?.children[0]) {
+
+  // DEBUG
+  console.log("redditNewRaw is: ");
+  console.log(redditNewRaw);
+
+  
+  
+
+  if (!redditNewRaw.data?.children[0]) {
     // Reddit server error
     response = '-1';
-    response = redditNew;
+    response = redditNewRaw;
     res.status(500).send(response);
     return;
   }
+
+  const redditNew = redditNewRaw.data.children;
 
   // Get most recent 50 posts from db
   const dbPosts = await postsCollection
