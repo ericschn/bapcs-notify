@@ -8,6 +8,7 @@ const postsCollection = db.collection('posts');
 
 // Main worker job, runs every minute
 // Gets 100 posts, adds new posts and updates existing
+// /api/v1/worker/update
 workerRouter.get('/update', async (req, res) => {
   let response = '';
   const redditNew = await getRedditNew(100);
@@ -55,6 +56,27 @@ workerRouter.get('/update', async (req, res) => {
 
   res.send(response);
 });
+
+// Test if reddit can be accessed
+workerRouter.get('/test', async (req, res) => {
+  const bapcsUrl = 'https://old.reddit.com/r/buildapcsales/new/.json?raw_json=1';
+  try {
+    let result = await axios.get(`${bapcsUrl}`, {
+      timeout: 6000,
+      headers: {
+        'accept-encoding': '*',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246',
+      },
+    });
+    const data = result.data;
+    // TODO: data processing for reddit error
+    res.send(data);
+  } catch (error) {
+    console.error('API /test ERROR: ' + error);
+    res.send('error');
+  }
+})
 
 // Admin function
 // Populates empty database
